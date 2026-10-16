@@ -29,7 +29,7 @@
     const root = document.documentElement, btn = $("#themeBtn");
     try { const saved = localStorage.getItem("theme"); if (saved) root.dataset.theme = saved; } catch (e) {}
     if (!btn) return;
-    const current = () => root.dataset.theme || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+    const current = () => root.dataset.theme || "dark";
     btn.addEventListener("click", () => {
       const next = current() === "dark" ? "light" : "dark";
       root.dataset.theme = next;
