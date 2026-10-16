@@ -389,6 +389,14 @@
     });
   })();
 
+  /* ---------- Home profile card: live network counts ---------- */
+  (function netCounts() {
+    const N = S.network; if (!N || !$("[data-net]")) return;
+    const k = s => s.toLowerCase().replace(/[^a-z]/g, "");
+    const v = { inst: N.inst.length, countries: new Set(N.inst.map(i => i.cc)).size, people: new Set(N.inst.flatMap(i => i.a).map(k)).size };
+    $$("[data-net]").forEach(n => { n.textContent = v[n.dataset.net]; });
+  })();
+
   /* ---------- Collaboration globe (Collaborate page) ---------- */
   (function globe() {
     const canvas = $("#globe"), N = S.network;
@@ -442,6 +450,7 @@
       });
       li.appendChild(ul); list.appendChild(li);
     });
+    const partners = c => C.filter(o => o !== c && [...o.papers].some(p => c.papers.has(p)) && (o.c !== c.c || o.cc !== c.cc));
     function showDetail(c) {
       if (!detail) return;
       if (!c) { detail.innerHTML = `<p class="nd-empty">Select a point on the globe or a name below to see co-authors and shared papers.</p>`; return; }
@@ -449,6 +458,7 @@
       detail.innerHTML = `<div class="nd-head"><strong>${esc(c.c)}</strong><span>${esc(c.country)}</span><button type="button" class="nd-close" aria-label="Clear selection">×</button></div>
         <ul class="nd-inst">${c.inst.map(i => `<li>${esc(i.n)}</li>`).join("")}</ul>
         ${c.people.length ? `<p class="nd-k">Co-authors</p><p class="nd-people">${c.people.map(esc).join(", ")}</p>` : `<p class="nd-k">My affiliation on these papers</p>`}
+        ${partners(c).length ? `<p class="nd-k">Shared papers with</p><ul class="nd-inst">${partners(c).map(o => `<li>${o.inst.map(i => esc(i.n)).join(", ")} <span class="nd-sub">${esc(o.c)}, ${esc(o.country)}</span></li>`).join("")}</ul>` : ""}
         <p class="nd-k">Papers</p><ul class="nd-papers">${papers.map(p => `<li>${esc(p.t)} <span>${esc(p.v)}, ${p.y}</span></li>`).join("")}</ul>`;
       $(".nd-close", detail).addEventListener("click", () => select(null));
     }
