@@ -458,9 +458,9 @@
     const allPeople = new Map(); N.inst.flatMap(i => i.a).forEach(a => allPeople.set(nameKey(a), a));
     const allPapers = new Set(N.inst.flatMap(i => i.p));
     const ccs = new Set(N.inst.map(i => i.cc));
-    if (stats) stats.innerHTML = [[N.inst.length, "institutions"], [ccs.size, "countries"], [allPeople.size, "co-authors"], [allPapers.size, "papers"]].map(([v, k]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("");
+    if (stats) stats.innerHTML = [[N.inst.length, "institutions"], [ccs.size, "countries"], [allPeople.size, "co-authors"], [allPapers.size, "papers and abstracts"]].map(([v, k]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("");
     const note = $("#gbdNote"); if (note && N.gbd) note.textContent = `${N.gbd.institutions} institutions in ${N.gbd.countries} countries`;
-    const src = $("#netSource"); if (src) src.textContent = `Points show ${N.source}. The Global Burden of Disease layer adds the ${N.gbd ? N.gbd.papers : 3} consortium papers, each with hundreds of authors, as a separate overlay.`;
+    const src = $("#netSource"); if (src) src.textContent = `Points show ${N.source}. Counts exclude the ${N.gbd ? N.gbd.papers : 3} Global Burden of Disease consortium papers, each with hundreds of authors; switch them on as a separate overlay.`;
 
     // Side list grouped by country
     const countries = {};

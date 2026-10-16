@@ -512,3 +512,5 @@ footer .links { display: flex; flex-wrap: wrap; gap: 16px; }
 .tool:hover .tool-t { color: var(--accent); }
 .tool-d { font-size: .9375rem; color: var(--fg-2); line-height: 1.55; }
 .band[id], section[id], h2[id], summary[id] { scroll-margin-top: 130px; }
+.anchor-alias { position: absolute; width: 0; height: 0; overflow: hidden; scroll-margin-top: 130px; }
+.band { position: relative; }
