@@ -21,14 +21,3 @@ window.SITE.talks = [
   {kind:"talk", sort:"2022-11", when:"2022", title:"49th Annual Conference of the Indian Immunology Society (Immunocon)", where:"India", tag:"Best oral presentation"}
 ];
 
-window.SITE.awards = [
-  {when:"2025–2026", text:"EMBO Travel Grants, ASCB|EMBO Cell Bio 2025 and 2026"},
-  {when:"2026", text:"Google TPU Research Cloud award, foundation model development"},
-  {when:"2025–2026", text:"eLife Ambassador"},
-  {when:"2025", text:"EUGLOH support grants, EACR 2025 and LAMELIS 2025"},
-  {when:"2024", text:"FocalPlane Correspondent travel grant, The Company of Biologists"},
-  {when:"2020–2023", text:"UGC Senior and Junior Research Fellowships, India"},
-  {when:"2018–2020", text:"Junior Research Fellowships, MHRD (IIT Jodhpur) and DAE (NISER Bhubaneswar)"},
-  {when:"2016–2018", text:"DBT Merit Scholarship, MSc"},
-  {when:"2016", text:"Department Gold Medal, 1st rank in BSc Botany, University of Burdwan"}
-];
