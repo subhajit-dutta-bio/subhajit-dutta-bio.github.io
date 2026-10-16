@@ -101,7 +101,7 @@
       W = Math.max(1, r.width); H = Math.max(1, r.height);
       canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       bg = ctx.createRadialGradient(W * 0.75, H * 0.4, 0, W * 0.75, H * 0.4, Math.max(W, H) * 0.9);
-      bg.addColorStop(0, "#143469"); bg.addColorStop(0.55, "#09204a"); bg.addColorStop(1, "#040e24");
+      bg.addColorStop(0, "#25539f"); bg.addColorStop(0.55, "#1b3f80"); bg.addColorStop(1, "#14306a");
       maxF = Math.round(Math.min(1100, Math.max(260, W * H / 1000)));
       seed();
     }
@@ -489,11 +489,11 @@
       glow.addColorStop(0, "rgba(110,170,255,0.18)"); glow.addColorStop(1, "rgba(110,170,255,0)");
       ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(cx, cy, s * 1.18, 0, 6.283); ctx.fill();
       const ocean = ctx.createRadialGradient(cx - s * 0.35, cy - s * 0.4, s * 0.1, cx, cy, s);
-      ocean.addColorStop(0, "#143466"); ocean.addColorStop(1, "#06142d");
+      ocean.addColorStop(0, "#2a5aa6"); ocean.addColorStop(1, "#163872");
       ctx.beginPath(); path(sphere); ctx.fillStyle = ocean; ctx.fill();
       ctx.beginPath(); path(grat); ctx.lineWidth = 0.5; ctx.strokeStyle = "rgba(142,197,255,0.08)"; ctx.stroke();
       if (feats) {
-        ctx.beginPath(); path(land); ctx.fillStyle = "#1c3560"; ctx.fill();
+        ctx.beginPath(); path(land); ctx.fillStyle = "#3a5f98"; ctx.fill();
         for (const f of feats) {
           const g = showG && gbdSet.has(f.id), c = coreSet.has(f.id);
           if (!g && !c) continue;
