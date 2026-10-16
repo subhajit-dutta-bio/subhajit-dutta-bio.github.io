@@ -56,7 +56,8 @@
     // Portrait
     const port = $("#portrait");
     if (port) {
-      if (P.photo) { port.innerHTML = ""; port.appendChild(el("img", {src: P.photo, alt: P.name || "Portrait", loading: "eager"})); }
+      const cur = $("img", port);
+      if (P.photo && (!cur || cur.getAttribute("src") !== P.photo)) { port.innerHTML = ""; port.appendChild(el("img", {src: P.photo, alt: P.name || "Portrait", loading: "eager"})); }
     }
     // Profile links (any element with data-link="scholar" etc.)
     $$("[data-link]").forEach(node => {
@@ -73,6 +74,10 @@
     $$("[data-email]").forEach(n => { n.textContent = P.email || ""; });
     $$("[data-copy-email]").forEach(b => b.addEventListener("click", () => copyText(P.email, $("[data-email]"))));
     // Legal
+    if (P.updated) { const d = new Date(P.updated + "T12:00:00"); if (!isNaN(d)) $$("[data-updated]").forEach(n => { n.setAttribute("datetime", P.updated); n.textContent = d.toLocaleDateString("en-GB", {month: "long", year: "numeric"}); }); }
+    const POS = P.position || {};
+    const posVal = { role: POS.role, city: POS.city, orgFull: POS.orgFull, place: [POS.city, POS.country].filter(Boolean).join(", "), now: [POS.role, POS.org].filter(Boolean).join(", ") };
+    $$("[data-pos]").forEach(n => { const v = posVal[n.dataset.pos]; if (v) n.textContent = v; });
     $$("[data-legal-address]").forEach(n => { n.textContent = P.legal && P.legal.address ? P.legal.address : ""; if (unset(P.legal && P.legal.address)) n.classList.add("todo"); });
     $$("[data-legal-phone]").forEach(n => { const ph = P.legal && P.legal.phone; if (ph) n.textContent = ph; else n.closest("p") && (n.closest("p").hidden = true); });
     // Analytics
@@ -94,15 +99,16 @@
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const rand = (a, b) => a + Math.random() * (b - a);
     const BR = 70 * Math.PI / 180, FLOW = 26, VPOL = 90, CAP = 1.1, BRANCH = 3.2;
-    let W = 0, H = 0, raf = 0, running = false, last = 0, bg = null, maxF = 300, t = 0;
+    let W = 0, H = 0, raf = 0, running = false, last = 0, bg = null, maxF = 300, t = 0, armed = false, visible = true, lastDraw = 0;
+    const small = matchMedia("(max-width: 899px)").matches;
     const F = [], M = [], R = [];
     function resize() {
-      const r = canvas.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 1.5);
+      const r = canvas.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, small ? 1 : 1.5);
       W = Math.max(1, r.width); H = Math.max(1, r.height);
       canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       bg = ctx.createRadialGradient(W * 0.75, H * 0.4, 0, W * 0.75, H * 0.4, Math.max(W, H) * 0.9);
       bg.addColorStop(0, "#25539f"); bg.addColorStop(0.55, "#1b3f80"); bg.addColorStop(1, "#14306a");
-      maxF = Math.round(Math.min(1100, Math.max(260, W * H / 1000)));
+      maxF = Math.round(Math.min(small ? 520 : 1100, Math.max(220, W * H / 1000)));
       seed();
     }
     const frontX = () => W * (0.2 + 0.85 * Math.pow(Math.random(), 0.6));
@@ -183,20 +189,29 @@
     }
     function frame(now) {
       if (!running) return;
+      if (small && now - lastDraw < 32) { raf = requestAnimationFrame(frame); return; }
+      lastDraw = now;
       const dt = Math.min(0.05, (now - (last || now)) / 1000); last = now;
       step(dt); draw(); raf = requestAnimationFrame(frame);
     }
-    const start = () => { if (running || reduced) return; running = true; last = 0; raf = requestAnimationFrame(frame); };
+    const start = () => { if (running || reduced || !armed || !visible) return; running = true; last = 0; raf = requestAnimationFrame(frame); };
     const stop = () => { running = false; cancelAnimationFrame(raf); };
     resize();
-    for (let i = 0; i < 150; i++) step(1 / 30); draw();
+    for (let i = 0; i < 60; i++) step(1 / 30); draw();
+    const arm = () => { armed = true; start(); };
+    const later = () => setTimeout(() => ("requestIdleCallback" in window ? requestIdleCallback(arm, { timeout: 2000 }) : arm()), 600);
+    if (document.readyState === "complete") later(); else addEventListener("load", later, { once: true });
     let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { resize(); if (reduced) { for (let i = 0; i < 90; i++) step(1 / 30); } draw(); }, 150); });
-    if ("IntersectionObserver" in window) new IntersectionObserver(en => { en[0].isIntersecting ? start() : stop(); }, { threshold: 0.02 }).observe(canvas); else start();
+    if ("IntersectionObserver" in window) new IntersectionObserver(en => { visible = en[0].isIntersecting; visible ? start() : stop(); }, { threshold: 0.02 }).observe(canvas);
     document.addEventListener("visibilitychange", () => { document.hidden ? stop() : start(); });
   })();
 
   /* ---------- Publications ---------- */
-  const PUBS = (S.pubs || []).slice();
+  const PENDING_ST = ["under review", "submitted", "in preparation"];
+  const isPending = p => PENDING_ST.includes(p.status) && !p.doi && !p.url;
+  const ALLPUBS = (S.pubs || []).slice();
+  const PUBS = ALLPUBS.filter(p => !isPending(p));
+  const PENDING = ALLPUBS.filter(isPending);
   function pubHref(p) { return p.url || (p.doi ? "https://doi.org/" + p.doi : null); }
   function bibtex(p) {
     const authors = strip(p.authors).replace(/\(.*?\)/g, "").replace(/\*/g, "").replace(/,?\s*et al\.?/i, " and others").split(/,\s*/).map(a => a.trim()).filter(Boolean);
@@ -229,7 +244,8 @@
       <div>
         <div class="pub-title">${h ? `<a href="${h}" target="_blank" rel="noopener">${p.title}</a>` : p.title}</div>
         <div class="pub-authors">${p.authors}</div>
-        <div class="pub-venue"><i>${p.venue}</i></div>
+        ${p.venue ? `<div class="pub-venue"><i>${p.venue}</i></div>` : ""}
+        ${p.take ? `<p class="pub-take">${p.take}</p>` : ""}
         ${p.note ? `<div class="pub-note">${p.note}</div>` : ""}
         <div class="pub-actions">${actions.join("")}</div>
       </div>`;
@@ -240,7 +256,7 @@
     const list = $("#pubList"); if (!list) return;
     const filters = $("#pubFilters"), search = $("#pubSearch"), summary = $("#pubSummary");
     const count = t => t === "all" ? PUBS.length : PUBS.filter(p => p.type === t).length;
-    if (summary) summary.textContent = `${count("paper")} peer-reviewed articles, ${count("review")} manuscripts under review or in preparation, ${count("preprint")} preprints, ${count("commentary")} Nature Reviews journal-club pieces, ${count("patent")} patent application and consortium authorship on Global Burden of Disease studies. Click BibTeX on any entry to copy a citation.`;
+    if (summary) summary.textContent = `${count("paper")} peer-reviewed articles, ${count("preprint")} preprints, ${count("commentary")} Nature Reviews journal-club pieces, ${count("patent")} patent application and consortium authorship on Global Burden of Disease studies. Click BibTeX on any entry to copy a citation.`;
     let type = "all", q = "";
     const hash = location.hash.replace("#", ""); if ((S.pubTypes || []).some(([k]) => k === hash)) type = hash;
     (S.pubTypes || []).forEach(([key, label]) => {
@@ -261,13 +277,20 @@
       empty.hidden = shown > 0;
     }
     apply();
+    const pend = $("#pubPending");
+    if (pend && PENDING.length) {
+      $("[data-pending-n]", pend).textContent = PENDING.length;
+      const ol = $("ol", pend);
+      PENDING.sort((a, b) => b.year - a.year).forEach(p => ol.appendChild(el("li", {class: "pend"}, `<div class="pub-title">${p.title}</div><div class="pub-authors">${p.authors}</div><div class="pub-note">${esc(p.note || "Manuscript")} · ${esc(p.status)}</div>`)));
+      if (location.hash === "#in-progress") pend.open = true;
+    } else if (pend) pend.hidden = true;
   })();
   (function featured() {
     const host = $("#featuredPubs"); if (!host) return;
     const picks = PUBS.filter(p => p.featured).sort((a, b) => b.year - a.year).slice(0, 3);
     picks.forEach(p => {
       const h = pubHref(p) || (p.preprint ? "https://doi.org/" + p.preprint : "/publications/");
-      host.appendChild(el("article", null, `<div class="k">${esc(strip(p.venue).split(",")[0])}, ${p.year}${p.status && p.status !== "published" ? `, ${esc(p.status)}` : ""}</div><h3><a href="${h}" ${h.startsWith("http") ? 'target="_blank" rel="noopener"' : ""}>${p.title}</a></h3><p>${p.authors}</p>`));
+      host.appendChild(el("article", null, `<div class="k">${esc(strip(p.venue).split(",")[0])}, ${p.year}${p.status && p.status !== "published" ? `, ${esc(p.status)}` : ""}</div><h3><a href="${h}" ${h.startsWith("http") ? 'target="_blank" rel="noopener"' : ""}>${p.title}</a></h3><p>${p.authors}</p>${p.take ? `<p class="feat-take">${p.take}</p>` : ""}`));
     });
   })();
 
@@ -384,7 +407,9 @@
     $$("[data-theme-fig]").forEach(fig => {
       const m = MEDIA.find(x => x.theme === fig.dataset.themeFig && (x.type || "image") === "image");
       if (!m) { fig.hidden = true; return; }
-      fig.innerHTML = `<figure><img src="${m.src}" alt="${esc(m.caption || "")}" loading="lazy"><figcaption>${esc(m.caption || "")}</figcaption></figure>`;
+      const dims = m.w && m.h ? ` width="${m.w}" height="${m.h}"` : "";
+      const credit = m.credit ? `<span class="fig-credit">${m.link ? `<a href="${m.link}" target="_blank" rel="noopener">${esc(m.credit)}</a>` : esc(m.credit)}</span>` : "";
+      fig.innerHTML = `<figure><img src="${m.src}" alt="${esc(m.caption || "")}" loading="lazy" decoding="async"${dims}><figcaption>${esc(m.caption || "")}${credit}</figcaption></figure>`;
       $("img", fig).addEventListener("click", () => openLightbox([m], 0));
     });
   })();
