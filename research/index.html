@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Research | Subhajit Dutta</title>
-<meta name="description" content="Four research themes of Subhajit Dutta: the Mitochondria–Actin–Translation Hub, telomere–immune crosstalk, quantitative imaging of actin, and pan-cancer computation.">
+<meta name="description" content="Research of Subhajit Dutta: telomere–immune crosstalk, mitochondria in cancer cell migration, quantitative imaging of actin, and pan-cancer computational biology.">
 <meta name="author" content="Subhajit Dutta">
 <link rel="canonical" href="https://duttasubhajit.com/research/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Research | Subhajit Dutta">
-<meta property="og:description" content="Four research themes of Subhajit Dutta: the Mitochondria–Actin–Translation Hub, telomere–immune crosstalk, quantitative imaging of actin, and pan-cancer computation.">
+<meta property="og:description" content="Research of Subhajit Dutta: telomere–immune crosstalk, mitochondria in cancer cell migration, quantitative imaging of actin, and pan-cancer computational biology.">
 <meta property="og:url" content="https://duttasubhajit.com/research/">
 <meta property="og:site_name" content="Subhajit Dutta">
 <meta property="og:image" content="https://duttasubhajit.com/assets/img/og.jpg">
@@ -20,9 +20,11 @@
 <meta name="twitter:image" content="https://duttasubhajit.com/assets/img/og.jpg">
 <meta name="robots" content="index, follow">
 <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/site.css">
-<script src="/assets/data/profile.js"></script>
-<script src="/assets/data/media.js"></script>
+<script src="/assets/data/profile.js" defer></script>
+<script src="/assets/data/media.js" defer></script>
 <script src="/assets/site.js" defer></script>
 </head>
 <body data-page="research">
@@ -66,27 +68,12 @@
 <section class="page-head">
   <div class="wrap">
     <h1>Research</h1>
-    <p class="lede">A migrating cancer cell has to coordinate energy, cytoskeleton and protein synthesis at its leading edge. My core project asks how it does that; my computational work asks what the same cells look like across thousands of tumours.</p>
+    <p class="lede">Telomere biology and mitochondrial function both change with age, and both are rewired in cancer. I study how they, together with developmental (oncofetal) programmes, shape what a cancer cell becomes and where it goes, using cell migration, quantitative imaging and pan-cancer computation as ways in.</p>
   </div>
 </section>
 
 <div class="wrap">
-  <section class="band" id="math" aria-labelledby="h-math">
-    <div>
-      <div class="kicker">Core project</div>
-      <h2 id="h-math">The Mitochondria–Actin–Translation Hub</h2>
-      <p>Protrusion-enabling mRNAs are translated where they are needed. I show a physical coupling of outer-mitochondrial-membrane-proximal ribosomes, VDAC1-dependent energy supply and actin dynamics at the cell front, and test it with CRISPR-Cas9, proximity ligation, compartment-resolved proteomics, drug perturbation (FCCP, VBIT-12, translation inhibitors) and live super-resolution imaging.</p>
-      <ul>
-        <li>Minisymposium talk, ASCB|EMBO Cell Bio 2025, Philadelphia</li>
-        <li>Expression-parameterised mechanotransduction ODE for ultrasensitive mechanosensor states and compartmentalised YAP regulation (under review)</li>
-        <li>VDAC1 functional states in cancer (review, under review); mitochondrial allocation in metastasis (invited review, Seminars in Cancer Biology)</li>
-      </ul>
-      <div class="band-links"><a class="btn sm" href="/publications/#review">Manuscripts</a><a class="btn sm" href="/talks/">Talks</a></div>
-    </div>
-    <div class="band-fig" data-theme-fig="math"></div>
-  </section>
-
-  <section class="band flip" id="telomere" aria-labelledby="h-telo">
+  <section class="band" id="telomere" aria-labelledby="h-telo">
     <div>
       <div class="kicker">Telomeres and immunity</div>
       <h2 id="h-telo">How telomere length talks to the tumour microenvironment</h2>
@@ -101,6 +88,21 @@
     <div class="band-fig" data-theme-fig="telomere"></div>
   </section>
 
+  <section class="band flip" id="math" aria-labelledby="h-math">
+    <div>
+      <div class="kicker">Mitochondria in migration</div>
+      <h2 id="h-math">The Mitochondria–Actin–Translation Hub</h2>
+      <p>Protrusion-enabling mRNAs are translated where they are needed. I am testing a physical coupling of outer-mitochondrial-membrane-proximal ribosomes, VDAC1-dependent energy supply and actin dynamics at the cell front, using CRISPR-Cas9, proximity ligation, compartment-resolved proteomics, drug perturbation (FCCP, VBIT-12, translation inhibitors) and live super-resolution imaging.</p>
+      <ul>
+        <li>Minisymposium talk, ASCB|EMBO Cell Bio 2025, Philadelphia</li>
+        <li>Expression-parameterised mechanotransduction ODE for ultrasensitive mechanosensor states and compartmentalised YAP regulation (under review)</li>
+        <li>VDAC1 functional states in cancer (review, under review); mitochondrial allocation in metastasis (invited review, under review)</li>
+      </ul>
+      <div class="band-links"><a class="btn sm" href="/publications/#in-progress">Manuscripts</a><a class="btn sm" href="/talks/">Talks</a></div>
+    </div>
+    <div class="band-fig" data-theme-fig="math"></div>
+  </section>
+
   <section class="band" id="imaging" aria-labelledby="h-img">
     <div>
       <div class="kicker">Quantitative imaging</div>
@@ -108,7 +110,7 @@
       <p>Actin in a cell is a liquid crystal: it has orientational order, and that order breaks at topological defects. I use TV-L1 variational optical flow, nematic order and defect analysis, Helmholtz–Hodge decomposition and single-particle tracking on live-cell, confocal and super-resolution data (dSTORM, PALM, STED, TIRF, FLIM), and build deep-learning pipelines and napari plugins so that others can do the same.</p>
       <ul>
         <li>Actin nematic organisation in breast cancer (with Antonio Virgilio Failla, under review)</li>
-        <li>Temporal order separates generic persistence from cue-directed commitment in cell migration (bioRxiv, under review)</li>
+        <li>Temporal ordering of migration steps carries directional memory (bioRxiv preprint, 2026)</li>
         <li>Mechanical observables of cancer invasion (Frontiers in Cell and Developmental Biology, 2026)</li>
         <li>Reanalysis of the JUMP Cell Painting genome-scale image screen</li>
       </ul>
@@ -123,9 +125,9 @@
       <h2 id="h-pan">Regulatory, spatial and immune structure in public data</h2>
       <p>Public data holds structure that no single study was designed to see. As sole author I integrate TCGA, DepMap, CPTAC, ENCODE eCLIP and spatial transcriptomics (Visium, Xenium, CosMx) to find it: chromosomal-instability fields that mark antigen-presentation-low, immune-cold neighbourhoods; a regulatory atlas of 6,983 GWAS risk variants; healthy-organ immune baselines that track tumour immune load; AP-1 motif architecture in olaparib-adaptive chromatin remodelling.</p>
       <ul>
-        <li>Frontiers in Systems Biology, 2026 (two articles)</li>
+        <li>Two articles in Frontiers in Systems Biology, 2026</li>
         <li>Three preprints on bioRxiv and medRxiv, 2026</li>
-        <li>Foundation models for single-cell data, supported by a Google TPU Research Cloud award (2026)</li>
+        <li>Google TPU Research Cloud compute award (2026)</li>
       </ul>
       <div class="band-links"><a class="btn sm" href="/publications/#preprint">Preprints</a><a class="btn sm" href="/collaborate/">Analyse your data</a></div>
     </div>
@@ -151,10 +153,29 @@
     </dl>
   </div>
 </section>
+
+<section class="section" id="code" aria-labelledby="h-code">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 id="h-code">Code and tools</h2>
+      <p class="section-intro">Open-source analysis code. More repositories are on GitHub as they are documented.</p>
+    </div>
+    <ul class="tools">
+      <li>
+        <a class="tool" href="https://github.com/subhajit-dutta-bio/Cell-Migration-Analysis-Pipeline" target="_blank" rel="noopener">
+          <span class="tool-k">Python · Jupyter / Colab · MIT licence</span>
+          <span class="tool-t">Cell Migration Analysis Pipeline</span>
+          <span class="tool-d">Turns TrackMate track tables into per-cell speed, displacement, directionality, MSD and turning angles, with rose plots, movies and automatic statistical comparison between conditions.</span>
+        </a>
+      </li>
+    </ul>
+    <p class="small muted" style="margin-top:18px">All public code: <a href="https://github.com/subhajit-dutta-bio" target="_blank" rel="me noopener">github.com/subhajit-dutta-bio</a></p>
+  </div>
+</section>
 </main>
 <footer>
   <div class="wrap">
-    <span>© 2026 Subhajit Dutta · Hamburg</span>
+    <span>© 2026 Subhajit Dutta · <span data-pos="city">Hamburg</span> · <span class="upd">Updated <time data-updated datetime="2026-10-17">October 2026</time></span></span>
     <span class="links">
       <a href="https://orcid.org/0000-0003-2390-7492" rel="me noopener" target="_blank">ORCID</a>
       <a href="/collaborate/">Contact</a>
