@@ -42,6 +42,8 @@
   (function nav() {
     const page = document.body.dataset.page;
     $$(".tabs a").forEach(a => { if (a.dataset.page === page) a.setAttribute("aria-current", "page"); });
+    const cur = $(".tabs a[aria-current]"), ul = $(".tabs");
+    if (cur && ul && ul.scrollWidth > ul.clientWidth) ul.scrollLeft = Math.max(0, cur.offsetLeft - (ul.clientWidth - cur.offsetWidth) / 2);
     const nav = $(".nav"), btn = $("#menuBtn");
     if (btn && nav) {
       btn.addEventListener("click", () => { const open = nav.classList.toggle("open"); btn.setAttribute("aria-expanded", String(open)); });
@@ -81,46 +83,115 @@
     }
   })();
 
-  /* ---------- Hero director field (home page) ---------- */
-  (function field() {
-    const canvas = $("#field"); if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    let W = 0, H = 0, raf = 0, running = false;
+  /* ---------- Hero: live leading-edge simulation (home page) ----------
+     Dendritic nucleation model: actin filaments polymerise toward the cell front (+x),
+     Arp2/3 branches spawn at ~70°, capping stops growth, and the whole network
+     undergoes retrograde flow. Mitochondria drift through the lamella and emit
+     short-lived puffs of local translation. */
+  (function cellField() {
+    const canvas = $("#cellfield"); if (!canvas) return;
+    const ctx = canvas.getContext("2d", { alpha: false });
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const defects = [
-      { x: 0.60, y: 0.40, q: 0.5,  ax: 0.030, ay: 0.040, s: 0.21 },
-      { x: 0.86, y: 0.70, q: -0.5, ax: 0.035, ay: 0.030, s: 0.17 }
-    ];
+    const rand = (a, b) => a + Math.random() * (b - a);
+    const BR = 70 * Math.PI / 180, FLOW = 26, VPOL = 90, CAP = 1.1, BRANCH = 3.2;
+    let W = 0, H = 0, raf = 0, running = false, last = 0, bg = null, maxF = 300, t = 0;
+    const F = [], M = [], R = [];
     function resize() {
-      const r = canvas.getBoundingClientRect(); const dpr = Math.min(devicePixelRatio || 1, 2);
-      W = r.width; H = r.height; canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const r = canvas.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 1.5);
+      W = Math.max(1, r.width); H = Math.max(1, r.height);
+      canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      bg = ctx.createRadialGradient(W * 0.75, H * 0.4, 0, W * 0.75, H * 0.4, Math.max(W, H) * 0.9);
+      bg.addColorStop(0, "#0e1c31"); bg.addColorStop(0.55, "#070d19"); bg.addColorStop(1, "#03060d");
+      maxF = Math.round(Math.min(1100, Math.max(260, W * H / 1000)));
+      seed();
     }
-    function draw(force) {
-      if (!W || !H) resize();
-      const t = performance.now() / 1000;
-      const cs = getComputedStyle(document.documentElement);
-      const cField = cs.getPropertyValue("--field").trim(), cDim = cs.getPropertyValue("--field-dim").trim();
-      const step = W < 600 ? 16 : 20, len = step * 0.62;
-      ctx.clearRect(0, 0, W, H);
-      const ds = defects.map(d => ({ x: (d.x + Math.sin(t * d.s) * d.ax) * W, y: (d.y + Math.cos(t * d.s * 0.8) * d.ay) * H, q: d.q }));
-      for (let y = step / 2; y < H; y += step) for (let x = step / 2; x < W; x += step) {
-        let theta = 0.35 * Math.sin(x / W * 4.1 + t * 0.12) * Math.cos(y / H * 3.3 - t * 0.09), dmin = 1e9;
-        for (const d of ds) { const dx = x - d.x, dy = y - d.y; theta += d.q * Math.atan2(dy, dx); dmin = Math.min(dmin, Math.hypot(dx, dy)); }
-        const near = Math.max(0, 1 - dmin / (W * 0.22));
-        ctx.strokeStyle = near > 0.45 ? cField : cDim; ctx.globalAlpha = 0.22 + 0.55 * near * near; ctx.lineWidth = 1 + near;
-        const c = Math.cos(theta) * len / 2, s = Math.sin(theta) * len / 2;
-        ctx.beginPath(); ctx.moveTo(x - c, y - s); ctx.lineTo(x + c, y + s); ctx.stroke();
+    const frontX = () => W * (0.2 + 0.85 * Math.pow(Math.random(), 0.6));
+    function fil(x, y, a, grown) { return { x, y, a, len: grown ? rand(8, 50) : 0, max: rand(26, 70), grow: !grown || Math.random() < 0.35, age: grown ? rand(0, 4) : 0, life: rand(5, 9) }; }
+    function mito(x) { return { x, y: rand(0, H), a: rand(-0.6, 0.6), L: rand(26, 66), w: rand(7, 10), v: rand(14, 34), ph: rand(0, 6.28), turn: rand(-0.3, 0.3), cr: Math.round(rand(3, 6)) }; }
+    function seed() {
+      F.length = 0; M.length = 0; R.length = 0;
+      for (let i = 0; i < maxF * 0.25; i++) F.push(fil(rand(0, W), rand(0, H), rand(-0.7, 0.7), true));
+      const nm = Math.round(Math.max(9, Math.min(28, W * H / 38000)));
+      for (let i = 0; i < nm; i++) M.push(mito(rand(0, W)));
+    }
+    function step(dt) {
+      t += dt;
+      for (let i = F.length - 1; i >= 0; i--) {
+        const f = F[i];
+        f.x -= FLOW * dt; f.age += dt;
+        if (f.grow) {
+          f.len += VPOL * dt;
+          if (f.len >= f.max || Math.random() < CAP * dt) f.grow = false;
+          if (F.length < maxF && f.len > 12 && Math.random() < BRANCH * dt) {
+            const s = rand(0.35, 1) * f.len, side = Math.random() < 0.5 ? -1 : 1;
+            let a = f.a + side * BR; if (Math.abs(a) > 1.25) a = f.a - side * BR;
+            F.push({ x: f.x + Math.cos(f.a) * s, y: f.y + Math.sin(f.a) * s, a, len: 0, max: rand(20, 60), grow: true, age: 0, life: rand(5, 9) });
+          }
+        }
+        if (f.age > f.life || f.x + f.len < -30) F.splice(i, 1);
       }
-      ctx.globalAlpha = 1;
-      for (const d of ds) { ctx.beginPath(); ctx.arc(d.x, d.y, 3.5, 0, Math.PI * 2); ctx.fillStyle = cField; ctx.fill(); }
-      if (running && !reduced && !force) raf = requestAnimationFrame(() => draw(false));
+      let need = Math.min(14, Math.max(0, Math.floor(maxF * 0.5) - F.length));
+      while (need-- > 0) F.push(fil(frontX(), rand(-10, H + 10), rand(-0.6, 0.6), false));
+      for (const m of M) {
+        m.a += (m.turn + Math.sin(t * 0.7 + m.ph) * 0.25) * dt;
+        if (Math.abs(m.a) > 0.9) m.turn = -Math.sign(m.a) * Math.abs(m.turn);
+        m.x += (Math.cos(m.a) * m.v - FLOW * 0.35) * dt; m.y += Math.sin(m.a) * m.v * dt;
+        if (m.x > W + 80) m.x = -80; if (m.x < -90) m.x = W + 70;
+        if (m.y > H + 40) m.y = -40; if (m.y < -50) m.y = H + 30;
+        if (Math.random() < 0.9 * dt) for (let k = 0; k < 4; k++) R.push({ x: m.x + rand(-m.L, m.L) * 0.7, y: m.y + rand(-14, 14), age: 0, life: rand(0.9, 1.8) });
+      }
+      for (let i = R.length - 1; i >= 0; i--) { const r = R[i]; r.age += dt; r.x -= FLOW * 0.5 * dt; if (r.age > r.life) R.splice(i, 1); }
     }
-    window.__drawField = draw;
-    const start = () => { if (running) return; running = true; if (reduced) draw(true); else raf = requestAnimationFrame(() => draw(false)); };
+    const buckets = [[], [], [], []];
+    function draw() {
+      ctx.globalCompositeOperation = "source-over"; ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+      ctx.globalCompositeOperation = "lighter";
+      for (const b of buckets) b.length = 0;
+      const tips = [];
+      for (const f of F) {
+        const fin = Math.min(1, f.age / 0.5), fout = Math.min(1, (f.life - f.age) / 1.8);
+        const a = Math.max(0, Math.min(fin, fout));
+        if (a <= 0.02) continue;
+        buckets[Math.min(3, Math.floor(a * 4))].push(f);
+        if (f.grow) tips.push(f);
+      }
+      ctx.lineWidth = 1.05; ctx.lineCap = "round";
+      buckets.forEach((b, k) => {
+        if (!b.length) return;
+        ctx.strokeStyle = `rgba(111,231,236,${0.14 + k * 0.17})`;
+        ctx.beginPath();
+        for (const f of b) { ctx.moveTo(f.x, f.y); ctx.lineTo(f.x + Math.cos(f.a) * f.len, f.y + Math.sin(f.a) * f.len); }
+        ctx.stroke();
+      });
+      ctx.fillStyle = "rgba(210,252,255,0.85)"; ctx.beginPath();
+      for (const f of tips) { const x = f.x + Math.cos(f.a) * f.len, y = f.y + Math.sin(f.a) * f.len; ctx.moveTo(x + 1.6, y); ctx.arc(x, y, 1.6, 0, 6.283); }
+      ctx.fill();
+      for (const m of M) {
+        ctx.save(); ctx.translate(m.x, m.y); ctx.rotate(m.a);
+        const L = m.L, w = m.w, r = w / 2;
+        ctx.beginPath(); ctx.moveTo(-L / 2 + r, -r); ctx.lineTo(L / 2 - r, -r); ctx.arc(L / 2 - r, 0, r, -Math.PI / 2, Math.PI / 2); ctx.lineTo(-L / 2 + r, r); ctx.arc(-L / 2 + r, 0, r, Math.PI / 2, Math.PI * 1.5); ctx.closePath();
+        ctx.fillStyle = "rgba(228,107,220,0.20)"; ctx.fill();
+        ctx.lineWidth = 1.4; ctx.strokeStyle = "rgba(236,124,228,0.85)"; ctx.stroke();
+        ctx.lineWidth = 0.9; ctx.strokeStyle = "rgba(246,170,240,0.55)"; ctx.beginPath();
+        for (let k = 1; k <= m.cr; k++) { const x = -L / 2 + r + (k / (m.cr + 1)) * (L - w); const wob = Math.sin(t * 2 + k + m.ph) * 1.2; ctx.moveTo(x + wob, -r + 1.8); ctx.lineTo(x - wob, r - 1.8); }
+        ctx.stroke(); ctx.restore();
+      }
+      ctx.beginPath();
+      for (const r of R) { const a = 1 - r.age / r.life; ctx.moveTo(r.x + 1.5, r.y); ctx.arc(r.x, r.y, 1.1 + a * 0.8, 0, 6.283); }
+      ctx.fillStyle = "rgba(255,197,107,0.75)"; ctx.fill();
+      ctx.globalCompositeOperation = "source-over";
+    }
+    function frame(now) {
+      if (!running) return;
+      const dt = Math.min(0.05, (now - (last || now)) / 1000); last = now;
+      step(dt); draw(); raf = requestAnimationFrame(frame);
+    }
+    const start = () => { if (running || reduced) return; running = true; last = 0; raf = requestAnimationFrame(frame); };
     const stop = () => { running = false; cancelAnimationFrame(raf); };
-    resize(); draw(true);
-    addEventListener("resize", () => { resize(); draw(true); });
-    if ("IntersectionObserver" in window) new IntersectionObserver(en => { en[0].isIntersecting ? start() : stop(); }, { threshold: 0.05 }).observe(canvas); else start();
+    resize();
+    for (let i = 0; i < 150; i++) step(1 / 30); draw();
+    let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { resize(); if (reduced) { for (let i = 0; i < 90; i++) step(1 / 30); } draw(); }, 150); });
+    if ("IntersectionObserver" in window) new IntersectionObserver(en => { en[0].isIntersecting ? start() : stop(); }, { threshold: 0.02 }).observe(canvas); else start();
     document.addEventListener("visibilitychange", () => { document.hidden ? stop() : start(); });
   })();
 
@@ -316,6 +387,193 @@
       fig.innerHTML = `<figure><img src="${m.src}" alt="${esc(m.caption || "")}" loading="lazy"><figcaption>${esc(m.caption || "")}</figcaption></figure>`;
       $("img", fig).addEventListener("click", () => openLightbox([m], 0));
     });
+  })();
+
+  /* ---------- Collaboration globe (Collaborate page) ---------- */
+  (function globe() {
+    const canvas = $("#globe"), N = S.network;
+    if (!canvas || !N || !window.d3 || !window.topojson || !d3.geoOrthographic) return;
+    const ctx = canvas.getContext("2d");
+    const stage = $("#netStage"), tip = $("#netTip"), detail = $("#netDetail"), list = $("#netList"), stats = $("#netStats"), tog = $("#gbdToggle");
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const P = N.papers || [];
+    const nameKey = s => s.toLowerCase().replace(/[^a-z]/g, "");
+
+    // Group institutions by city so co-located partners share one point.
+    const byCity = new Map();
+    N.inst.forEach(i => {
+      const k = `${i.c}|${i.cc}`;
+      if (!byCity.has(k)) byCity.set(k, { c: i.c, cc: i.cc, country: i.country || i.cc, lat: i.lat, lng: i.lng, inst: [] });
+      byCity.get(k).inst.push(i);
+    });
+    const C = [...byCity.values()];
+    C.forEach(c => {
+      c.papers = new Set(c.inst.flatMap(i => i.p));
+      const ppl = new Map(); c.inst.flatMap(i => i.a).forEach(a => ppl.set(nameKey(a), a)); c.people = [...ppl.values()];
+      c.home = Math.abs(c.lat - N.home.lat) < 0.05 && Math.abs(c.lng - N.home.lng) < 0.05;
+      c.r = c.home ? 7 : Math.min(9, 3.6 + Math.sqrt(c.inst.length + c.people.length) * 0.7);
+    });
+    const arcs = [];
+    for (let a = 0; a < C.length; a++) for (let b = a + 1; b < C.length; b++) {
+      const shared = [...C[a].papers].filter(p => C[b].papers.has(p)); if (!shared.length) continue;
+      const A = [C[a].lng, C[a].lat], B = [C[b].lng, C[b].lat];
+      if (d3.geoDistance(A, B) < 0.015) continue;
+      arcs.push({ A, B, n: shared.length, ip: d3.geoInterpolate(A, B), off: Math.random(), home: C[a].home || C[b].home });
+    }
+
+    // Stats
+    const allPeople = new Map(); N.inst.flatMap(i => i.a).forEach(a => allPeople.set(nameKey(a), a));
+    const allPapers = new Set(N.inst.flatMap(i => i.p));
+    const ccs = new Set(N.inst.map(i => i.cc));
+    if (stats) stats.innerHTML = [[N.inst.length, "institutions"], [ccs.size, "countries"], [allPeople.size, "co-authors"], [allPapers.size, "papers"]].map(([v, k]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("");
+    const note = $("#gbdNote"); if (note && N.gbd) note.textContent = `${N.gbd.institutions} institutions in ${N.gbd.countries} countries`;
+    const src = $("#netSource"); if (src) src.textContent = `Affiliations as printed on each paper. Source: ${N.source}. The Global Burden of Disease layer adds the ${N.gbd ? N.gbd.papers : 3} consortium papers, each with hundreds of authors, as a separate overlay.`;
+
+    // Side list grouped by country
+    const countries = {};
+    N.inst.forEach(i => (countries[i.country || i.cc] ||= []).push(i));
+    if (list) Object.entries(countries).sort((a, b) => b[1].length - a[1].length).forEach(([cn, arr]) => {
+      const li = el("li", null, `<div class="nl-country">${esc(cn)}<span>${arr.length}</span></div>`);
+      const ul = el("ul");
+      arr.sort((a, b) => a.n.localeCompare(b.n)).forEach(i => {
+        const b = el("button", { type: "button", class: "nl-item" }, `${esc(i.n)}<small>${esc(i.c)}</small>`);
+        b.addEventListener("click", () => { const city = byCity.get(`${i.c}|${i.cc}`); select(city); flyTo(city); });
+        ul.appendChild(el("li")).appendChild(b);
+      });
+      li.appendChild(ul); list.appendChild(li);
+    });
+    function showDetail(c) {
+      if (!detail) return;
+      if (!c) { detail.innerHTML = `<p class="nd-empty">Select a point on the globe or a name below to see co-authors and shared papers.</p>`; return; }
+      const papers = [...c.papers].map(k => P[k]).filter(Boolean).sort((a, b) => b.y - a.y);
+      detail.innerHTML = `<div class="nd-head"><strong>${esc(c.c)}</strong><span>${esc(c.country)}</span><button type="button" class="nd-close" aria-label="Clear selection">×</button></div>
+        <ul class="nd-inst">${c.inst.map(i => `<li>${esc(i.n)}</li>`).join("")}</ul>
+        ${c.people.length ? `<p class="nd-k">Co-authors</p><p class="nd-people">${c.people.map(esc).join(", ")}</p>` : `<p class="nd-k">My affiliation on these papers</p>`}
+        <p class="nd-k">Papers</p><ul class="nd-papers">${papers.map(p => `<li>${esc(p.t)} <span>${esc(p.v)}, ${p.y}</span></li>`).join("")}</ul>`;
+      $(".nd-close", detail).addEventListener("click", () => select(null));
+    }
+
+    // Globe
+    const proj = d3.geoOrthographic().clipAngle(90).precision(0.6);
+    const path = d3.geoPath(proj, ctx);
+    const grat = d3.geoGraticule10();
+    const sphere = { type: "Sphere" };
+    const HOME_ROT = [-58, -27, 0];
+    let rot = HOME_ROT.slice(), zoom = 1, W = 0, H = 0, R = 0, dpr = 1;
+    let feats = null, borders = null, land = null, coreSet = new Set(N.coreCountryIds || []), gbdSet = new Set((N.gbd && N.gbd.countryIds) || []);
+    let showG = false, hover = null, sel = null, running = false, raf = 0, last = 0, idleUntil = 0, fly = null;
+    function resize() {
+      const r = stage.getBoundingClientRect(); dpr = Math.min(devicePixelRatio || 1, 2);
+      W = r.width; H = r.height; canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      R = Math.min(W, H) / 2 - 18; applyProj();
+    }
+    function applyProj() { proj.scale(R * zoom).translate([W / 2, H / 2]).rotate(rot); }
+    const center = () => [-rot[0], -rot[1]];
+    const visible = ll => d3.geoDistance(ll, center()) < Math.PI / 2 - 0.02;
+    function draw(now) {
+      applyProj();
+      ctx.clearRect(0, 0, W, H);
+      const s = proj.scale(), [cx, cy] = proj.translate();
+      const glow = ctx.createRadialGradient(cx, cy, s * 0.9, cx, cy, s * 1.18);
+      glow.addColorStop(0, "rgba(92,196,207,0.16)"); glow.addColorStop(1, "rgba(92,196,207,0)");
+      ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(cx, cy, s * 1.18, 0, 6.283); ctx.fill();
+      const ocean = ctx.createRadialGradient(cx - s * 0.35, cy - s * 0.4, s * 0.1, cx, cy, s);
+      ocean.addColorStop(0, "#12274a"); ocean.addColorStop(1, "#060d1c");
+      ctx.beginPath(); path(sphere); ctx.fillStyle = ocean; ctx.fill();
+      ctx.beginPath(); path(grat); ctx.lineWidth = 0.5; ctx.strokeStyle = "rgba(143,227,232,0.08)"; ctx.stroke();
+      if (feats) {
+        ctx.beginPath(); path(land); ctx.fillStyle = "#1a2c48"; ctx.fill();
+        for (const f of feats) {
+          const g = showG && gbdSet.has(f.id), c = coreSet.has(f.id);
+          if (!g && !c) continue;
+          ctx.beginPath(); path(f); ctx.fillStyle = c ? "rgba(92,196,207,0.34)" : "rgba(255,197,107,0.18)"; ctx.fill();
+        }
+        ctx.beginPath(); path(borders); ctx.lineWidth = 0.5; ctx.strokeStyle = "rgba(180,205,235,0.22)"; ctx.stroke();
+      }
+      ctx.beginPath(); path(sphere); ctx.lineWidth = 1; ctx.strokeStyle = "rgba(143,227,232,0.35)"; ctx.stroke();
+      if (showG && N.gbd) {
+        ctx.fillStyle = "rgba(255,197,107,0.78)"; ctx.beginPath();
+        for (const [la, lo, n] of N.gbd.points) { if (!visible([lo, la])) continue; const p = proj([lo, la]); const rr = 1.1 + Math.sqrt(n) * 0.55; ctx.moveTo(p[0] + rr, p[1]); ctx.arc(p[0], p[1], rr, 0, 6.283); }
+        ctx.fill();
+      }
+      const tt = (now || 0) / 1000;
+      for (const a of arcs) {
+        const hot = sel && ((sel.lng === a.A[0] && sel.lat === a.A[1]) || (sel.lng === a.B[0] && sel.lat === a.B[1]));
+        ctx.beginPath(); path({ type: "LineString", coordinates: [a.A, a.B] });
+        ctx.lineWidth = hot ? 2 : 1 + (a.n > 1 ? 0.6 : 0); ctx.strokeStyle = hot ? "rgba(255,255,255,0.85)" : a.home ? "rgba(228,107,220,0.55)" : "rgba(111,231,236,0.5)"; ctx.stroke();
+        if (!reduced) {
+          for (let k = 0; k < 2; k++) {
+            const t = (tt * 0.22 + a.off + k * 0.5) % 1, ll = a.ip(t);
+            if (!visible(ll)) continue;
+            const p = proj(ll); ctx.beginPath(); ctx.arc(p[0], p[1], 2.1, 0, 6.283); ctx.fillStyle = a.home ? "#F3A6EE" : "#BFF6F8"; ctx.fill();
+          }
+        }
+      }
+      for (const c of C) {
+        const ll = [c.lng, c.lat]; if (!visible(ll)) { c.px = null; continue; }
+        const p = proj(ll); c.px = p;
+        const col = c.home ? "#E46BDC" : "#6FE7EC";
+        if (c.home && !reduced) { const ph = (tt % 2) / 2; ctx.beginPath(); ctx.arc(p[0], p[1], c.r + ph * 16, 0, 6.283); ctx.strokeStyle = `rgba(228,107,220,${0.6 * (1 - ph)})`; ctx.lineWidth = 1.5; ctx.stroke(); }
+        ctx.beginPath(); ctx.arc(p[0], p[1], c.r + 4, 0, 6.283); ctx.fillStyle = c.home ? "rgba(228,107,220,0.18)" : "rgba(111,231,236,0.16)"; ctx.fill();
+        ctx.beginPath(); ctx.arc(p[0], p[1], c.r, 0, 6.283); ctx.fillStyle = col; ctx.fill();
+        if (c === sel || c === hover) { ctx.beginPath(); ctx.arc(p[0], p[1], c.r + 3, 0, 6.283); ctx.lineWidth = 2; ctx.strokeStyle = "#fff"; ctx.stroke(); }
+      }
+      if (sel && sel.px) {
+        ctx.font = "600 13px 'IBM Plex Sans', sans-serif"; ctx.fillStyle = "#fff"; ctx.textBaseline = "middle";
+        ctx.shadowColor = "rgba(0,0,0,.8)"; ctx.shadowBlur = 6; ctx.fillText(sel.c, sel.px[0] + sel.r + 8, sel.px[1]); ctx.shadowBlur = 0;
+      }
+    }
+    function frame(now) {
+      if (!running) return;
+      const dt = Math.min(0.05, (now - (last || now)) / 1000); last = now;
+      if (fly) {
+        const k = Math.min(1, (now - fly.t0) / fly.dur), e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+        rot = [fly.from[0] + fly.d[0] * e, fly.from[1] + fly.d[1] * e, 0]; if (k >= 1) fly = null;
+      } else if (!dragging && !hover && now > idleUntil && !reduced) rot[0] += 5 * dt;
+      draw(now); raf = requestAnimationFrame(frame);
+    }
+    function flyTo(c) {
+      const to = [-c.lng, -Math.max(-60, Math.min(60, c.lat))];
+      let d0 = ((to[0] - rot[0]) % 360 + 540) % 360 - 180;
+      fly = { from: rot.slice(), d: [d0, to[1] - rot[1]], t0: performance.now(), dur: reduced ? 1 : 900 };
+      idleUntil = performance.now() + 8000; if (!running) { rot = [rot[0] + d0, to[1], 0]; fly = null; draw(0); }
+    }
+    function select(c) { sel = c; showDetail(c); idleUntil = performance.now() + (c ? 1e9 : 1500); if (!running) draw(0); }
+    function pick(x, y) { let best = null, bd = 14; for (const c of C) { if (!c.px) continue; const d = Math.hypot(c.px[0] - x, c.px[1] - y); if (d < bd + c.r * 0.5) { bd = d; best = c; } } return best; }
+    let dragging = false, downAt = null, rot0 = null, moved = 0;
+    canvas.addEventListener("pointerdown", e => { dragging = true; moved = 0; downAt = [e.clientX, e.clientY]; rot0 = rot.slice(); fly = null; canvas.setPointerCapture(e.pointerId); });
+    canvas.addEventListener("pointermove", e => {
+      const r = canvas.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+      if (dragging) {
+        const k = 0.28 / zoom, dx = e.clientX - downAt[0], dy = e.clientY - downAt[1]; moved = Math.max(moved, Math.hypot(dx, dy));
+        rot = [rot0[0] + dx * k, Math.max(-75, Math.min(75, rot0[1] - dy * k)), 0]; idleUntil = performance.now() + 4000; if (!running) draw(0); return;
+      }
+      const h = pick(x, y);
+      if (h !== hover) { hover = h; canvas.style.cursor = h ? "pointer" : "grab"; }
+      if (h && tip) { tip.hidden = false; tip.innerHTML = `<strong>${esc(h.c)}</strong> · ${esc(h.country)}<br>${h.inst.map(i => esc(i.n)).join("<br>")}`; tip.style.left = Math.min(W - 230, x + 14) + "px"; tip.style.top = (y + 14) + "px"; }
+      else if (tip) tip.hidden = true;
+    });
+    const end = e => { if (!dragging) return; dragging = false; if (moved < 5) { const r = canvas.getBoundingClientRect(); const h = pick(e.clientX - r.left, e.clientY - r.top); select(h || null); if (h) flyTo(h); } };
+    canvas.addEventListener("pointerup", end); canvas.addEventListener("pointercancel", () => { dragging = false; });
+    canvas.addEventListener("pointerleave", () => { hover = null; if (tip) tip.hidden = true; });
+    $$("[data-zoom]", stage).forEach(b => b.addEventListener("click", () => { zoom = Math.max(0.8, Math.min(3.2, zoom * (b.dataset.zoom === "1" ? 1.3 : 1 / 1.3))); if (!running) draw(0); }));
+    const rb = $("[data-reset]", stage); if (rb) rb.addEventListener("click", () => { zoom = 1; select(null); const d0 = ((HOME_ROT[0] - rot[0]) % 360 + 540) % 360 - 180; fly = { from: rot.slice(), d: [d0, HOME_ROT[1] - rot[1]], t0: performance.now(), dur: 800 }; if (!running) { rot = HOME_ROT.slice(); fly = null; draw(0); } });
+    if (tog) tog.addEventListener("change", () => { showG = tog.checked; const li = $(".lg-gbd-item", stage); if (li) li.hidden = !showG; if (showG && zoom > 1) zoom = 1; if (!running) draw(0); });
+    canvas.style.cursor = "grab";
+    showDetail(null);
+    const start = () => { if (running || reduced) return; running = true; last = 0; raf = requestAnimationFrame(frame); };
+    const stop = () => { running = false; cancelAnimationFrame(raf); };
+    resize(); draw(0);
+    fetch("/assets/data/countries-110m.json").then(r => r.json()).then(topo => {
+      feats = topojson.feature(topo, topo.objects.countries).features;
+      land = topojson.feature(topo, topo.objects.land);
+      borders = topojson.mesh(topo, topo.objects.countries, (a, b) => a !== b);
+      draw(0);
+    }).catch(() => {});
+    let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { resize(); draw(0); }, 120); });
+    if ("IntersectionObserver" in window) new IntersectionObserver(en => { en[0].isIntersecting ? start() : stop(); }, { threshold: 0.05 }).observe(canvas); else start();
+    document.addEventListener("visibilitychange", () => { document.hidden ? stop() : start(); });
   })();
 
   /* ---------- Collaboration form (Web3Forms → Gmail) ---------- */
