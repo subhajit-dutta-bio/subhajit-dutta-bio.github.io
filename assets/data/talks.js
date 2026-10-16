@@ -8,7 +8,7 @@
 window.SITE = window.SITE || {};
 window.SITE.talks = [
   {kind:"poster", sort:"2026-12", when:"December 2026", title:"ASCB|EMBO Cell Bio 2026", where:"San Diego, USA", tag:"EMBO Travel Grant"},
-  {kind:"talk", sort:"2026-08", when:"25 August 2026", title:"Hamburg Three Minute Thesis Competition", where:"Hamburg Research Academy", tag:"Selected speaker (10 of 19 applicants)", photo:"/assets/img/talk-3mt-2026.jpg"},
+  {kind:"talk", sort:"2026-08", when:"25 August 2026", title:"Hamburg Three Minute Thesis Competition", where:"Hamburg Research Academy", tag:"Selected speaker (10 of 19 applicants)", photo:"/assets/img/talk-3mt-2026.webp"},
   {kind:"poster", sort:"2026-07", when:"2–3 July 2026", title:"6th Annual SYMGLOH Symposium on Global Health Research", where:"Université Paris-Saclay, Paris"},
   {kind:"talk", sort:"2025-12", when:"December 2025", title:"Mitochondria anchor local translation and drive metastatic migration", where:"ASCB|EMBO Cell Bio 2025, Philadelphia", what:"Minisymposium oral presentation, Cancer Cell Biology: Cellular Interactions in the Tumor Microenvironment, and poster (abstract 3231).", tag:"Minisymposium talk, EMBO Travel Grant"},
   {kind:"talk", sort:"2025-06", when:"2025", title:"EUGLOH Annual Student Research Conference", where:"University of Porto", tag:"Best oral presentation"},
