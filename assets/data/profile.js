@@ -40,8 +40,8 @@ window.SITE.profile = {
     github: "https://github.com/subhajit-dutta-bio",    // https://github.com/...
     linkedin: "https://www.linkedin.com/in/subhajit-dutta-6a4b96134/",
     x: "https://x.com/SDutta_2904",
-    bluesky: "",
-    researchgate: ""
+    bluesky: "https://bsky.app/profile/sdutta.bsky.social",
+    researchgate: "https://www.researchgate.net/profile/Subhajit-Dutta-3"
   },
 
   // Collaboration form: free access key from https://web3forms.com (emailed to you, no account needed).

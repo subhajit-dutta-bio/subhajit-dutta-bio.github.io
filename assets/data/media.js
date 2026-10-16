@@ -28,7 +28,7 @@ window.SITE.media = [
   {src:"/assets/img/fig/fig-imaging-fcell2026.webp", w:1400, h:783, caption:"Invasion modes, how mechanical and EMT descriptions relate, and a hierarchy of mechanical observables from actin polarity to defect topology.", credit:"Figure 1, Dutta and Sulava, Front. Cell Dev. Biol. 2026 (CC BY 4.0)", link:"https://doi.org/10.3389/fcell.2026.1930678", group:"figures", theme:"imaging", wide:true},
   {src:"/assets/img/fig/fig-pancancer-biorxiv2026.webp", w:1028, h:1280, caption:"In melanoma spatial transcriptomics, inferred chromosomal-instability-like fields coincide with antigen-presentation-low, immune-cold neighbourhoods.", credit:"Figure 1, Dutta, bioRxiv 2026 (CC BY-NC-ND 4.0)", link:"https://doi.org/10.64898/2026.05.15.725574", group:"figures", theme:"pancancer"},
   {src:"/assets/img/talk-3mt-2026.webp", caption:"Speaking at the Hamburg Three Minute Thesis Competition, Hamburg Research Academy, August 2026.", group:"talks", wide:true},
-  {src:"/assets/img/talk-3mt-2026-stage.webp", caption:"How mitochondria help cancer cells metastasise: carrying ribosomes to the cell front for local translation. Hamburg Three Minute Thesis Competition, 2026.", group:"talks", theme:"math", wide:true},
+  {src:"/assets/img/talk-3mt-2026-stage.webp", caption:"Presenting how mitochondria help cancer cells metastasise at the Hamburg Three Minute Thesis Competition, 2026.", group:"talks", theme:"math", wide:true},
   {src:"/assets/img/portrait.webp", caption:"Subhajit Dutta, portrait, 2026.", group:"portraits"}
 ];
 
