@@ -8,7 +8,7 @@ window.SITE.profile = {
   orcid: "0000-0003-2390-7492",
 
   // Your site address once deployed, with trailing slash. Used for canonical links and sharing.
-  siteUrl: "https://subhajit-dutta-bio.github.io/",
+  siteUrl: "https://duttasubhajit.com/",
 
   // Headshot. Put the file in assets/img/ and set the path, e.g. "/assets/img/portrait.jpg".
   // Leave empty and a monogram is shown instead.
