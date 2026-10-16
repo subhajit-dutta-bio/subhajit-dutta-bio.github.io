@@ -24,8 +24,9 @@ window.SITE.profile = {
   links: {
     scholar: "",   // https://scholar.google.com/citations?user=...
     github: "https://github.com/subhajit-dutta-bio",    // https://github.com/...
-    linkedin: "",  // https://www.linkedin.com/in/.../
-    bluesky: "",   // https://bsky.app/profile/...
+    linkedin: "https://www.linkedin.com/in/subhajit-dutta-6a4b96134/",
+    x: "https://x.com/SDutta_2904",
+    bluesky: "",
     researchgate: ""
   },
 
