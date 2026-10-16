@@ -12,10 +12,10 @@ window.SITE.profile = {
 
   // Headshot. Put the file in assets/img/ and set the path, e.g. "/assets/img/portrait.jpg".
   // Leave empty and a monogram is shown instead.
-  photo: "",
+  photo: "/assets/img/portrait.jpg",
 
   // Image shown when the site is shared on LinkedIn, X, WhatsApp. 1200×630 px recommended.
-  ogImage: "",
+  ogImage: "/assets/img/og.jpg",
 
   // Your CV as PDF, e.g. "/assets/pdf/CV_Subhajit_Dutta.pdf". Leave empty to hide the button.
   cvPdf: "",
