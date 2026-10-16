@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://subhajit-dutta-bio.github.io/sitemap.xml
