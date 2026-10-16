@@ -22,6 +22,9 @@
    ============================================================ */
 window.SITE = window.SITE || {};
 window.SITE.media = [
+  {src:"/assets/img/talk-3mt-2026.jpg", caption:"Speaking at the Hamburg Three Minute Thesis Competition, Hamburg Research Academy, August 2026.", group:"talks", wide:true},
+  {src:"/assets/img/talk-3mt-2026-stage.jpg", caption:"How mitochondria help cancer cells metastasise: carrying ribosomes to the cell front for local translation. Hamburg Three Minute Thesis Competition, 2026.", group:"talks", theme:"math", wide:true},
+  {src:"/assets/img/portrait.jpg", caption:"Portrait, 2026.", group:"portraits"}
 ];
 
 window.SITE.mediaGroups = [

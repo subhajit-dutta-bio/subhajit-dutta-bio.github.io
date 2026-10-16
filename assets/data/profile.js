@@ -22,7 +22,7 @@ window.SITE.profile = {
 
   // Profile links. Empty entries are hidden.
   links: {
-    scholar: "",   // https://scholar.google.com/citations?user=...
+    scholar: "https://scholar.google.com/citations?user=DbkLvm4AAAAJ&hl=en",
     github: "https://github.com/subhajit-dutta-bio",    // https://github.com/...
     linkedin: "https://www.linkedin.com/in/subhajit-dutta-6a4b96134/",
     x: "https://x.com/SDutta_2904",

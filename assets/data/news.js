@@ -7,9 +7,7 @@
    ============================================================ */
 window.SITE = window.SITE || {};
 window.SITE.news = [
-  {date:"2026-10-12", text:"Presenting a poster at the EMBO Workshop on the DNA Damage Response in Cell Physiology and Disease, Sounio, Greece."},
-  {date:"2026-10-01", text:"Our review on the mitochondria–peroxisome interface in cancer metastasis (with Nilanjan Maity) has been accepted in <i>Frontiers in Pharmacology</i>."},
-  {date:"2026-09-07", text:"Poster at the EMBO Workshop Physics of Cells (PhysCell 2026), Egmond aan Zee."},
+  {date:"2026-10-01", text:"Our review on the mitochondria–peroxisome interface in cancer metastasis (with Namrata Maity) has been accepted in <i>Frontiers in Pharmacology</i>.", url:"https://www.frontiersin.org/journals/pharmacology/articles/10.3389/fphar.2026.1983363/full"},
   {date:"2026-08-31", text:"New preprint on bioRxiv: a replicated patient-specific component of tumour telomere length across two pan-cancer cohorts.", url:"https://doi.org/10.64898/2026.08.31.748414"},
   {date:"2026-08-25", text:"Selected speaker at the Hamburg Three Minute Thesis Competition, Hamburg Research Academy."},
   {date:"2026-07-16", text:"New preprint on bioRxiv: temporal order separates generic persistence from cue-directed commitment in cell migration.", url:"https://doi.org/10.64898/2026.07.16.739021"},

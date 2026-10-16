@@ -18,7 +18,6 @@ window.SITE.awards = [
   {group:"prize", sort:"2025-06", when:"2025", title:"Best oral presentation", where:"6th EUGLOH Annual Student Research Conference, University of Porto", highlight:true},
   {group:"prize", sort:"2025-03", when:"2025", title:"Second-best poster", where:"SFB/CRC 1348 Dynamic Cellular Interfaces, Universität Münster", highlight:true},
   {group:"prize", sort:"2022-11", when:"2022", title:"Best oral presentation", where:"49th Annual Conference of the Indian Immunology Society (Immunocon)", highlight:true},
-  {group:"prize", sort:"2016", when:"2016", title:"Department Gold Medal", where:"University of Burdwan", note:"First rank, BSc (Hons) Botany."},
 
   // Research and travel grants
   {group:"grant", sort:"2026", when:"2026", title:"Google TPU Research Cloud award", note:"Compute for foundation-model development."},
