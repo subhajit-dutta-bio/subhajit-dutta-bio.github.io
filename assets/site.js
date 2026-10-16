@@ -238,8 +238,35 @@
         filters.appendChild(b);
       });
     }
-    const aw = $("#awardsList");
-    if (aw) (S.awards || []).forEach(a => aw.appendChild(el("li", null, `<strong>${esc(a.text)}</strong> <span class="when">${esc(a.when)}</span>`)));
+  })();
+
+  /* ---------- Awards ---------- */
+  (function awards() {
+    const groupsHost = $("#awardGroups"); if (!groupsHost) return;
+    const items = (S.awards || []).slice().sort((a, b) => String(b.sort).localeCompare(String(a.sort)));
+    const cards = $("#awardCards");
+    if (cards) items.filter(a => a.highlight).slice(0, 3).forEach(a => cards.appendChild(el("article", {class: "award-card"},
+      `<div class="award-year">${esc(a.when)}</div><h3>${esc(a.title)}</h3>${a.where ? `<p>${esc(a.where)}</p>` : ""}`)));
+    (S.awardGroups || []).forEach(([key, label]) => {
+      const list = items.filter(a => a.group === key); if (!list.length) return;
+      const sec = el("section", {class: "section", "aria-label": label});
+      sec.innerHTML = `<div class="wrap"><div class="section-head"><h2>${esc(label)}</h2></div><ol class="rows"></ol></div>`;
+      const ol = $("ol", sec);
+      list.forEach(a => ol.appendChild(el("li", {class: "row"}, `<div class="row-when">${esc(a.when)}</div><div><div class="row-title">${esc(a.title)}</div>${a.where ? `<div class="row-where">${esc(a.where)}</div>` : ""}${a.note ? `<p class="row-what">${esc(a.note)}</p>` : ""}</div>`)));
+      groupsHost.appendChild(sec);
+    });
+  })();
+
+  /* ---------- Gentle reveal on scroll ---------- */
+  (function reveal() {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) return;
+    requestAnimationFrame(() => {
+      const targets = $$("main .section .wrap > *, .page-head .wrap > *").filter(n => n.getBoundingClientRect().top > innerHeight * 0.9);
+      if (!targets.length) return;
+      targets.forEach(n => n.classList.add("reveal"));
+      const io = new IntersectionObserver(en => en.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
+      targets.forEach(n => io.observe(n));
+    });
   })();
 
   /* ---------- Media gallery + lightbox ---------- */
