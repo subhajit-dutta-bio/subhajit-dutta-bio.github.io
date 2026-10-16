@@ -101,7 +101,7 @@
       W = Math.max(1, r.width); H = Math.max(1, r.height);
       canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       bg = ctx.createRadialGradient(W * 0.75, H * 0.4, 0, W * 0.75, H * 0.4, Math.max(W, H) * 0.9);
-      bg.addColorStop(0, "#0e1c31"); bg.addColorStop(0.55, "#070d19"); bg.addColorStop(1, "#03060d");
+      bg.addColorStop(0, "#143469"); bg.addColorStop(0.55, "#09204a"); bg.addColorStop(1, "#040e24");
       maxF = Math.round(Math.min(1100, Math.max(260, W * H / 1000)));
       seed();
     }
@@ -427,7 +427,7 @@
     const ccs = new Set(N.inst.map(i => i.cc));
     if (stats) stats.innerHTML = [[N.inst.length, "institutions"], [ccs.size, "countries"], [allPeople.size, "co-authors"], [allPapers.size, "papers"]].map(([v, k]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("");
     const note = $("#gbdNote"); if (note && N.gbd) note.textContent = `${N.gbd.institutions} institutions in ${N.gbd.countries} countries`;
-    const src = $("#netSource"); if (src) src.textContent = `Affiliations as printed on each paper. Source: ${N.source}. The Global Burden of Disease layer adds the ${N.gbd ? N.gbd.papers : 3} consortium papers, each with hundreds of authors, as a separate overlay.`;
+    const src = $("#netSource"); if (src) src.textContent = `Points show ${N.source}. The Global Burden of Disease layer adds the ${N.gbd ? N.gbd.papers : 3} consortium papers, each with hundreds of authors, as a separate overlay.`;
 
     // Side list grouped by country
     const countries = {};
@@ -476,22 +476,22 @@
       ctx.clearRect(0, 0, W, H);
       const s = proj.scale(), [cx, cy] = proj.translate();
       const glow = ctx.createRadialGradient(cx, cy, s * 0.9, cx, cy, s * 1.18);
-      glow.addColorStop(0, "rgba(92,196,207,0.16)"); glow.addColorStop(1, "rgba(92,196,207,0)");
+      glow.addColorStop(0, "rgba(110,170,255,0.18)"); glow.addColorStop(1, "rgba(110,170,255,0)");
       ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(cx, cy, s * 1.18, 0, 6.283); ctx.fill();
       const ocean = ctx.createRadialGradient(cx - s * 0.35, cy - s * 0.4, s * 0.1, cx, cy, s);
-      ocean.addColorStop(0, "#12274a"); ocean.addColorStop(1, "#060d1c");
+      ocean.addColorStop(0, "#143466"); ocean.addColorStop(1, "#06142d");
       ctx.beginPath(); path(sphere); ctx.fillStyle = ocean; ctx.fill();
-      ctx.beginPath(); path(grat); ctx.lineWidth = 0.5; ctx.strokeStyle = "rgba(143,227,232,0.08)"; ctx.stroke();
+      ctx.beginPath(); path(grat); ctx.lineWidth = 0.5; ctx.strokeStyle = "rgba(142,197,255,0.08)"; ctx.stroke();
       if (feats) {
-        ctx.beginPath(); path(land); ctx.fillStyle = "#1a2c48"; ctx.fill();
+        ctx.beginPath(); path(land); ctx.fillStyle = "#1c3560"; ctx.fill();
         for (const f of feats) {
           const g = showG && gbdSet.has(f.id), c = coreSet.has(f.id);
           if (!g && !c) continue;
-          ctx.beginPath(); path(f); ctx.fillStyle = c ? "rgba(92,196,207,0.34)" : "rgba(255,197,107,0.18)"; ctx.fill();
+          ctx.beginPath(); path(f); ctx.fillStyle = c ? "rgba(110,170,255,0.32)" : "rgba(255,197,107,0.18)"; ctx.fill();
         }
         ctx.beginPath(); path(borders); ctx.lineWidth = 0.5; ctx.strokeStyle = "rgba(180,205,235,0.22)"; ctx.stroke();
       }
-      ctx.beginPath(); path(sphere); ctx.lineWidth = 1; ctx.strokeStyle = "rgba(143,227,232,0.35)"; ctx.stroke();
+      ctx.beginPath(); path(sphere); ctx.lineWidth = 1; ctx.strokeStyle = "rgba(142,197,255,0.4)"; ctx.stroke();
       if (showG && N.gbd) {
         ctx.fillStyle = "rgba(255,197,107,0.78)"; ctx.beginPath();
         for (const [la, lo, n] of N.gbd.points) { if (!visible([lo, la])) continue; const p = proj([lo, la]); const rr = 1.1 + Math.sqrt(n) * 0.55; ctx.moveTo(p[0] + rr, p[1]); ctx.arc(p[0], p[1], rr, 0, 6.283); }
@@ -501,21 +501,21 @@
       for (const a of arcs) {
         const hot = sel && ((sel.lng === a.A[0] && sel.lat === a.A[1]) || (sel.lng === a.B[0] && sel.lat === a.B[1]));
         ctx.beginPath(); path({ type: "LineString", coordinates: [a.A, a.B] });
-        ctx.lineWidth = hot ? 2 : 1 + (a.n > 1 ? 0.6 : 0); ctx.strokeStyle = hot ? "rgba(255,255,255,0.85)" : a.home ? "rgba(228,107,220,0.55)" : "rgba(111,231,236,0.5)"; ctx.stroke();
+        ctx.lineWidth = hot ? 2 : 1 + (a.n > 1 ? 0.6 : 0); ctx.strokeStyle = hot ? "rgba(255,255,255,0.85)" : a.home ? "rgba(228,107,220,0.55)" : "rgba(142,197,255,0.55)"; ctx.stroke();
         if (!reduced) {
           for (let k = 0; k < 2; k++) {
             const t = (tt * 0.22 + a.off + k * 0.5) % 1, ll = a.ip(t);
             if (!visible(ll)) continue;
-            const p = proj(ll); ctx.beginPath(); ctx.arc(p[0], p[1], 2.1, 0, 6.283); ctx.fillStyle = a.home ? "#F3A6EE" : "#BFF6F8"; ctx.fill();
+            const p = proj(ll); ctx.beginPath(); ctx.arc(p[0], p[1], 2.1, 0, 6.283); ctx.fillStyle = a.home ? "#F3A6EE" : "#DCEBFF"; ctx.fill();
           }
         }
       }
       for (const c of C) {
         const ll = [c.lng, c.lat]; if (!visible(ll)) { c.px = null; continue; }
         const p = proj(ll); c.px = p;
-        const col = c.home ? "#E46BDC" : "#6FE7EC";
+        const col = c.home ? "#E46BDC" : "#8EC5FF";
         if (c.home && !reduced) { const ph = (tt % 2) / 2; ctx.beginPath(); ctx.arc(p[0], p[1], c.r + ph * 16, 0, 6.283); ctx.strokeStyle = `rgba(228,107,220,${0.6 * (1 - ph)})`; ctx.lineWidth = 1.5; ctx.stroke(); }
-        ctx.beginPath(); ctx.arc(p[0], p[1], c.r + 4, 0, 6.283); ctx.fillStyle = c.home ? "rgba(228,107,220,0.18)" : "rgba(111,231,236,0.16)"; ctx.fill();
+        ctx.beginPath(); ctx.arc(p[0], p[1], c.r + 4, 0, 6.283); ctx.fillStyle = c.home ? "rgba(228,107,220,0.18)" : "rgba(142,197,255,0.18)"; ctx.fill();
         ctx.beginPath(); ctx.arc(p[0], p[1], c.r, 0, 6.283); ctx.fillStyle = col; ctx.fill();
         if (c === sel || c === hover) { ctx.beginPath(); ctx.arc(p[0], p[1], c.r + 3, 0, 6.283); ctx.lineWidth = 2; ctx.strokeStyle = "#fff"; ctx.stroke(); }
       }
