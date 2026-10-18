@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.web3forms.com; form-action 'self' https://api.web3forms.com; base-uri 'self'; object-src 'none'; frame-src 'none'; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Media | Subhajit Dutta</title>
 <meta name="description" content="Figures, posters, talk photos and portraits from Subhajit Dutta's research.">
@@ -73,7 +75,7 @@
 </section>
 <section class="section flush">
   <div class="wrap">
-    <div class="pub-filters" id="mediaFilters" role="group" aria-label="Filter media" style="margin-bottom:24px"></div>
+    <div class="pub-filters mb-24" id="mediaFilters" role="group" aria-label="Filter media"></div>
     <div class="gallery" id="gallery"></div>
     <div class="empty" id="mediaEmpty" hidden>
       <p><strong>Figures, posters and photos are on their way.</strong> In the meantime, the <a href="/publications/">publications</a> page links to every paper.</p>
