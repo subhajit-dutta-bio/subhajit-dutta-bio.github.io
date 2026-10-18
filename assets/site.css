@@ -520,3 +520,7 @@ footer .links { display: flex; flex-wrap: wrap; gap: 16px; }
 .form-title { font-size: clamp(1.75rem, 3.5vw, 2.5rem); line-height: 1.1; }
 .row-what.news-text { margin-top: 0; font-size: 1rem; color: var(--fg); }
 .doc-link { color: inherit; text-decoration: none; }
+
+.name-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin: 14px 0 0; font-size: 0.9375rem; letter-spacing: 0.01em; color: #C3CEE0; }
+.name-meta q { font-style: italic; color: #F5F7FB; quotes: "\201C" "\201D"; }
+@media (max-width: 899px) { .name-meta { font-size: 0.875rem; margin-top: 10px; } }
