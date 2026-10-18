@@ -301,7 +301,7 @@
     const render = (host, limit) => {
       if (!host) return;
       items.slice(0, limit || items.length).forEach(n => {
-        host.appendChild(el("li", {class: "row"}, `<div class="row-when">${fmt(n.date)}</div><div><div class="row-what" style="margin-top:0;font-size:1rem;color:var(--fg)">${n.text}${n.url ? ` <a href="${n.url}" target="_blank" rel="noopener" class="small">Read</a>` : ""}</div></div>`));
+        host.appendChild(el("li", {class: "row"}, `<div class="row-when">${fmt(n.date)}</div><div><div class="row-what news-text">${n.text}${n.url ? ` <a href="${n.url}" target="_blank" rel="noopener" class="small">Read</a>` : ""}</div></div>`));
       });
     };
     render($("#newsList")); render($("#newsLatest"), 3);
@@ -390,7 +390,7 @@
     MEDIA.forEach((m, idx) => {
       const isDoc = (m.type || "image") !== "image";
       const fig = el("figure", {class: `tile${m.wide ? " wide" : ""}${isDoc ? " doc" : ""}`, "data-group": m.group || "figures", tabIndex: 0});
-      if (isDoc) { fig.innerHTML = `<a href="${m.src}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${docIcon}<span>${esc(m.caption || "Document")}</span></a>`; }
+      if (isDoc) { fig.innerHTML = `<a href="${m.src}" target="_blank" rel="noopener" class="doc-link">${docIcon}<span>${esc(m.caption || "Document")}</span></a>`; }
       else { fig.innerHTML = `<img src="${m.src}" alt="${esc(m.caption || "")}" loading="lazy"><figcaption>${esc(m.caption || "")}</figcaption>`; fig.addEventListener("click", () => openLightbox(visible(), visible().indexOf(m))); fig.addEventListener("keydown", e => { if (e.key === "Enter") fig.click(); }); }
       host.appendChild(fig);
     });

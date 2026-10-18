@@ -238,7 +238,7 @@ button { font: inherit; }
 .pub-pending > summary::before { content: "+"; font-family: var(--body); color: var(--accent); width: 1em; display: inline-block; }
 .pub-pending[open] > summary::before { content: "–"; }
 .pub-pending > summary:hover { color: var(--accent); }
-.pub-pending > summary small { font-family: var(--body); font-size: .875rem; color: var(--fg-3); }
+.pub-pending > summary small { font-family: var(--body); font-size: .875rem; color: var(--fg-2); }
 .pub-pending ol { list-style: none; margin: 0; padding: 0 22px 18px; }
 .pub-pending li.pend { padding: 14px 0; border-top: 1px solid var(--line); }
 .pub-actions { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; }
@@ -514,3 +514,9 @@ footer .links { display: flex; flex-wrap: wrap; gap: 16px; }
 .band[id], section[id], h2[id], summary[id] { scroll-margin-top: 130px; }
 .anchor-alias { position: absolute; width: 0; height: 0; overflow: hidden; scroll-margin-top: 130px; }
 .band { position: relative; }
+
+/* utility classes (replace inline styles so the Content-Security-Policy can forbid them) */
+.mb-24 { margin-bottom: 24px; } .mt-24 { margin-top: 24px; } .mt-18 { margin-top: 18px; }
+.form-title { font-size: clamp(1.75rem, 3.5vw, 2.5rem); line-height: 1.1; }
+.row-what.news-text { margin-top: 0; font-size: 1rem; color: var(--fg); }
+.doc-link { color: inherit; text-decoration: none; }
