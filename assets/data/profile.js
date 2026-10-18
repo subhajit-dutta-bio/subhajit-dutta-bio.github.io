@@ -49,7 +49,8 @@ window.SITE.profile = {
   web3formsKey: "REPLACE-WITH-YOUR-WEB3FORMS-ACCESS-KEY",
 
   // GoatCounter site code (cookie-free analytics). Empty = no analytics. If you ever enable it,
-  // also add a "Visitor statistics" paragraph to /legal/ describing it.
+  // also add a "Visitor statistics" paragraph to /legal/ describing it, and allow
+  // https://gc.zgo.at and the GoatCounter domain in the Content-Security-Policy meta tag of every page.
   goatcounter: "",
 
   // Legal page. No postal address is published; it is given on request by email.
