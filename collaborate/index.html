@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.web3forms.com; form-action 'self' https://api.web3forms.com; base-uri 'self'; object-src 'none'; frame-src 'none'; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Collaborate | Subhajit Dutta</title>
 <meta name="description" content="Work with Subhajit Dutta: computational analysis of public or your own omics and imaging data, image-analysis methods, co-authored reviews, talks and fellowship partnerships.">
@@ -134,7 +136,7 @@
   <div class="wrap">
     <div class="form-wrap">
       <div class="form-aside">
-        <h2 id="h-form" style="font-size:clamp(1.75rem,3.5vw,2.5rem);line-height:1.1">Send a message</h2>
+        <h2 id="h-form" class="form-title">Send a message</h2>
         <p>Messages land directly in my inbox. I reply to every one, usually within a few days. For a quick question, email is fine too.</p>
         <ul class="contact-list">
           <li><span class="k">Email</span><span class="v sel" data-email></span><button class="btn sm" type="button" data-copy-email>Copy</button></li>
@@ -148,9 +150,9 @@
         </ul>
       </div>
       <form class="collab" id="collabForm" novalidate>
-        <div class="field"><label for="f-name">Your name</label><input id="f-name" name="name" type="text" autocomplete="name" required></div>
-        <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
-        <div class="field"><label for="f-aff">Institution</label><input id="f-aff" name="affiliation" type="text" autocomplete="organization"></div>
+        <div class="field"><label for="f-name">Your name</label><input id="f-name" name="name" type="text" autocomplete="name" maxlength="120" required></div>
+        <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" maxlength="254" required></div>
+        <div class="field"><label for="f-aff">Institution</label><input id="f-aff" name="affiliation" type="text" autocomplete="organization" maxlength="200"></div>
         <div class="field"><label for="f-topic">What is this about?</label>
           <select id="f-topic" name="topic" required>
             <option value="Data analysis">Analysis of omics or imaging data</option>
@@ -161,7 +163,7 @@
             <option value="Other">Something else</option>
           </select>
         </div>
-        <div class="field full"><label for="f-msg">Message</label><textarea id="f-msg" name="message" required placeholder="What is the question, what data or material exists, and what would a good outcome look like?"></textarea></div>
+        <div class="field full"><label for="f-msg">Message</label><textarea id="f-msg" name="message" maxlength="5000" required placeholder="What is the question, what data or material exists, and what would a good outcome look like?"></textarea></div>
         <label class="check full"><input type="checkbox" name="consent" required> I agree that the details I enter are used to answer my message. They are forwarded by Web3Forms to Subhajit's email and not used for anything else. <a href="/legal/#privacy">Privacy notice</a></label>
         <label class="hp" aria-hidden="true">Leave this empty <input type="checkbox" name="botcheck" tabindex="-1"></label>
         <div class="form-foot full">
