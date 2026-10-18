@@ -524,3 +524,5 @@ footer .links { display: flex; flex-wrap: wrap; gap: 16px; }
 .name-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin: 14px 0 0; font-size: 0.9375rem; letter-spacing: 0.01em; color: #C3CEE0; }
 .name-meta q { font-style: italic; color: #F5F7FB; quotes: "\201C" "\201D"; }
 @media (max-width: 899px) { .name-meta { font-size: 0.875rem; margin-top: 10px; } }
+.name-meta .ipa { font-family: "Charis SIL", "Doulos SIL", "Gentium Plus", "Noto Sans", "Segoe UI", "Lucida Sans Unicode", "DejaVu Sans", sans-serif; color: #F5F7FB; letter-spacing: 0.02em; }
+.name-meta .say { color: #A9B7CD; font-size: 0.875em; letter-spacing: 0.04em; }
