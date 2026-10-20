@@ -6,7 +6,7 @@ window.SITE.profile = {
   name: "Subhajit Dutta",
 
   // Date of the last content update (YYYY-MM-DD), shown in every footer. Change it whenever you edit the site.
-  updated: "2026-10-17",
+  updated: "2026-10-20",
   email: "dsubhajit.edu@gmail.com",
   orcid: "0000-0003-2390-7492",
 

@@ -22,7 +22,7 @@ window.SITE.awards = [
   // Research and travel grants
   {group:"grant", sort:"2026", when:"2026", title:"Google TPU Research Cloud award", note:"Compute for foundation-model development."},
   {group:"grant", sort:"2026-12", when:"2025 – 2026", title:"EMBO Travel Grants", where:"ASCB|EMBO Cell Bio 2025 and 2026"},
-  {group:"grant", sort:"2025", when:"2025", title:"EUGLOH support grants", where:"EACR 2025 and LAMELIS 2025"},
+  {group:"grant", sort:"2026-07", when:"2025 – 2026", title:"EUGLOH travel grants (three awards)", where:"European University Alliance for Global Health", note:"EACR 2025 Congress and a collaborative visit to the University of Porto (2025); Annual Student Research Conference, University of Porto (2025); SYMGLOH Symposium, Université Paris-Saclay (2026)."},
   {group:"grant", sort:"2024", when:"2024", title:"FocalPlane Correspondent travel grant", where:"The Company of Biologists"},
 
   // Fellowships and scholarships

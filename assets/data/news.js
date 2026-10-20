@@ -12,7 +12,7 @@ window.SITE.news = [
   {date:"2026-09-03", text:"Review with Sushree Sulava published in <i>Frontiers in Cell and Developmental Biology</i>: mechanical observables of cancer invasion.", url:"https://doi.org/10.3389/fcell.2026.1930678"},
   {date:"2026-08-31", text:"New preprint on bioRxiv: a replicated patient-specific component of tumour telomere length across two pan-cancer cohorts.", url:"https://doi.org/10.64898/2026.08.31.748414"},
   {date:"2026-08-25", text:"Selected speaker at the Hamburg Three Minute Thesis Competition, Hamburg Research Academy."},
-  {date:"2026-07-20", text:"New preprint on bioRxiv: the temporal order of migration steps carries directional memory that speed and persistence measures miss.", url:"https://doi.org/10.64898/2026.07.16.739021"},
+  {date:"2026-07-20", text:"New preprint on bioRxiv: temporal order separates generic persistence from cue-directed commitment in cell migration.", url:"https://doi.org/10.64898/2026.07.16.739021"},
   {date:"2026-07-14", text:"Review with Anjana Goli published in <i>Frontiers in Systems Biology</i>: beyond static biomarkers, systems biology and AI for decoding cancer dynamics.", url:"https://doi.org/10.3389/fsysb.2026.1855016"},
   {date:"2026-07-02", text:"Poster at the 6th SYMGLOH Symposium on Global Health Research, Université Paris-Saclay."},
   {date:"2026-05-16", text:"Two preprints posted: transcriptome-inferred CIN-like fields and immune-cold spatial neighbourhoods (bioRxiv), and a pan-cancer regulatory atlas of 6,983 GWAS variants (medRxiv)."},
