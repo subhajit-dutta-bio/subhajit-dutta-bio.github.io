@@ -378,7 +378,7 @@
       $("[data-next]", lb).addEventListener("click", () => show(i + 1));
       document.addEventListener("keydown", e => { if (lb.hidden) return; if (e.key === "Escape") close(); if (e.key === "ArrowLeft") show(i - 1); if (e.key === "ArrowRight") show(i + 1); });
     }
-    function show(k) { i = (k + imgs.length) % imgs.length; const im = $("img", lb); im.src = imgs[i].src; im.alt = imgs[i].caption || ""; $(".lb-bar p", lb).textContent = imgs[i].caption || ""; $(".lb-nav", lb).hidden = imgs.length < 2; }
+    function show(k) { i = (k + imgs.length) % imgs.length; const im = $("img", lb); im.src = imgs[i].src; im.alt = imgs[i].caption || ""; const bp = $(".lb-bar p", lb); bp.textContent = imgs[i].caption || ""; if (imgs[i].credit) { const c = el("span", {class: "fig-credit"}); if (imgs[i].link) { const a = el("a", {href: imgs[i].link, target: "_blank", rel: "noopener"}); a.textContent = imgs[i].credit; c.appendChild(a); } else c.textContent = imgs[i].credit; bp.appendChild(c); } $(".lb-nav", lb).hidden = imgs.length < 2; }
     function close() { lb.hidden = true; document.body.style.overflow = ""; }
     show(i); lb.hidden = false; document.body.style.overflow = "hidden"; $(".lb-close", lb).focus();
   }

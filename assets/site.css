@@ -526,3 +526,33 @@ footer .links { display: flex; flex-wrap: wrap; gap: 16px; }
 @media (max-width: 899px) { .name-meta { font-size: 0.875rem; margin-top: 10px; } }
 .name-meta .ipa { font-family: "Charis SIL", "Doulos SIL", "Gentium Plus", "Noto Sans", "Segoe UI", "Lucida Sans Unicode", "DejaVu Sans", sans-serif; color: #F5F7FB; letter-spacing: 0.02em; }
 .name-meta .say { color: #A9B7CD; font-size: 0.875em; letter-spacing: 0.04em; }
+
+/* ---------- How my work is different ---------- */
+.approach-sub { margin: 36px 0 18px; font-size: 1.25rem; font-variation-settings: "opsz" 36; }
+.loop { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: 26px; counter-reset: none; }
+@media (min-width: 980px) { .loop { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 22px; } }
+.loop-step { position: relative; min-width: 0; padding: 20px 18px 18px; border: 1px solid var(--line); border-radius: 16px; background: var(--bg-2); }
+.loop-step h4 { margin: 10px 0 0; font-family: var(--display); font-size: 1.2rem; font-weight: 500; }
+.loop-step p { margin: 8px 0 0; font-size: 0.9375rem; line-height: 1.5; color: var(--fg-2); }
+.loop-step .loop-ex { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line); font-size: 0.8125rem; color: var(--accent); }
+.loop-n { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-weight: 600; font-size: 0.875rem; }
+.loop-step:not(:last-child)::after { content: "→"; position: absolute; color: var(--accent); font-size: 1.25rem; line-height: 1; }
+@media (min-width: 980px) { .loop-step:not(:last-child)::after { right: -18px; top: 50%; transform: translateY(-50%); } }
+@media (max-width: 979px) { .loop-step:not(:last-child)::after { content: "↓"; left: 50%; bottom: -24px; transform: translateX(-50%); } }
+.loop-back { margin: 18px 0 0; font-size: 0.9375rem; color: var(--fg-2); }
+.loop-back span { color: var(--accent); font-size: 1.15rem; margin-right: 6px; }
+.data-modes { display: grid; grid-template-columns: 1fr; gap: 20px; }
+@media (min-width: 760px) { .data-modes { grid-template-columns: 1fr 1fr; } }
+.data-mode { min-width: 0; padding: 20px 22px; border-radius: 16px; border: 1px solid var(--line); background: var(--bg-2); border-left: 4px solid var(--accent); }
+.data-mode:nth-child(2) { border-left-color: var(--accent-2); }
+.data-mode h4 { margin: 0; font-family: var(--display); font-size: 1.15rem; font-weight: 500; line-height: 1.3; }
+.data-mode h4 small { display: block; margin-bottom: 6px; font-family: var(--body); font-size: 0.8125rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+.data-mode:nth-child(2) h4 small { color: var(--accent-2); }
+.data-mode ul { margin: 12px 0 0; padding-left: 18px; color: var(--fg-2); font-size: 0.9375rem; line-height: 1.5; }
+.data-mode li + li { margin-top: 6px; }
+
+/* Figures in the gallery: show the whole figure, not a crop */
+.tile[data-group="figures"] { background: #fff; }
+.tile[data-group="figures"] img { object-fit: contain; padding: 6px; }
+.lightbox .lb-bar .fig-credit { display: block; margin-top: 4px; font-size: 0.8125rem; }
+.lightbox .lb-bar .fig-credit a { color: #9EC5FF; }
