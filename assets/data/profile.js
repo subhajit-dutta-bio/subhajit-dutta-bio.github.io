@@ -46,7 +46,7 @@ window.SITE.profile = {
 
   // Collaboration form: free access key from https://web3forms.com (emailed to you, no account needed).
   // Messages are delivered to the email you register there (use dsubhajit.edu@gmail.com).
-  web3formsKey: "REPLACE-WITH-YOUR-WEB3FORMS-ACCESS-KEY",
+  web3formsKey: "f3f25369-b0d8-497b-a456-4c7816723119",
 
   // GoatCounter site code (cookie-free analytics). Empty = no analytics. If you ever enable it,
   // also add a "Visitor statistics" paragraph to /legal/ describing it, and allow
