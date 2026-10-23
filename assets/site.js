@@ -27,13 +27,13 @@
   /* ---------- Theme ---------- */
   (function theme() {
     const root = document.documentElement, btn = $("#themeBtn");
-    try { const saved = localStorage.getItem("theme"); if (saved) root.dataset.theme = saved; } catch (e) {}
+    try { const saved = localStorage.getItem("theme-v2"); if (saved) root.dataset.theme = saved; } catch (e) {}
     if (!btn) return;
     const current = () => root.dataset.theme || "dark";
     btn.addEventListener("click", () => {
       const next = current() === "dark" ? "light" : "dark";
       root.dataset.theme = next;
-      try { localStorage.setItem("theme", next); } catch (e) {}
+      try { localStorage.setItem("theme-v2", next); } catch (e) {}
       if (window.__drawField) window.__drawField(true);
     });
   })();
@@ -107,7 +107,7 @@
       W = Math.max(1, r.width); H = Math.max(1, r.height);
       canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       bg = ctx.createRadialGradient(W * 0.75, H * 0.4, 0, W * 0.75, H * 0.4, Math.max(W, H) * 0.9);
-      bg.addColorStop(0, "#25539f"); bg.addColorStop(0.55, "#1b3f80"); bg.addColorStop(1, "#14306a");
+      bg.addColorStop(0, "#25335E"); bg.addColorStop(0.55, "#1C284B"); bg.addColorStop(1, "#151E3A");
       maxF = Math.round(Math.min(small ? 520 : 1100, Math.max(220, W * H / 1000)));
       seed();
     }
@@ -164,27 +164,27 @@
       ctx.lineWidth = 1.05; ctx.lineCap = "round";
       buckets.forEach((b, k) => {
         if (!b.length) return;
-        ctx.strokeStyle = `rgba(111,231,236,${0.14 + k * 0.17})`;
+        ctx.strokeStyle = `rgba(159,195,232,${0.14 + k * 0.17})`;
         ctx.beginPath();
         for (const f of b) { ctx.moveTo(f.x, f.y); ctx.lineTo(f.x + Math.cos(f.a) * f.len, f.y + Math.sin(f.a) * f.len); }
         ctx.stroke();
       });
-      ctx.fillStyle = "rgba(210,252,255,0.85)"; ctx.beginPath();
+      ctx.fillStyle = "rgba(225,236,250,0.85)"; ctx.beginPath();
       for (const f of tips) { const x = f.x + Math.cos(f.a) * f.len, y = f.y + Math.sin(f.a) * f.len; ctx.moveTo(x + 1.6, y); ctx.arc(x, y, 1.6, 0, 6.283); }
       ctx.fill();
       for (const m of M) {
         ctx.save(); ctx.translate(m.x, m.y); ctx.rotate(m.a);
         const L = m.L, w = m.w, r = w / 2;
         ctx.beginPath(); ctx.moveTo(-L / 2 + r, -r); ctx.lineTo(L / 2 - r, -r); ctx.arc(L / 2 - r, 0, r, -Math.PI / 2, Math.PI / 2); ctx.lineTo(-L / 2 + r, r); ctx.arc(-L / 2 + r, 0, r, Math.PI / 2, Math.PI * 1.5); ctx.closePath();
-        ctx.fillStyle = "rgba(228,107,220,0.20)"; ctx.fill();
-        ctx.lineWidth = 1.4; ctx.strokeStyle = "rgba(236,124,228,0.85)"; ctx.stroke();
-        ctx.lineWidth = 0.9; ctx.strokeStyle = "rgba(246,170,240,0.55)"; ctx.beginPath();
+        ctx.fillStyle = "rgba(227,160,168,0.20)"; ctx.fill();
+        ctx.lineWidth = 1.4; ctx.strokeStyle = "rgba(232,170,178,0.85)"; ctx.stroke();
+        ctx.lineWidth = 0.9; ctx.strokeStyle = "rgba(242,200,205,0.55)"; ctx.beginPath();
         for (let k = 1; k <= m.cr; k++) { const x = -L / 2 + r + (k / (m.cr + 1)) * (L - w); const wob = Math.sin(t * 2 + k + m.ph) * 1.2; ctx.moveTo(x + wob, -r + 1.8); ctx.lineTo(x - wob, r - 1.8); }
         ctx.stroke(); ctx.restore();
       }
       ctx.beginPath();
       for (const r of R) { const a = 1 - r.age / r.life; ctx.moveTo(r.x + 1.5, r.y); ctx.arc(r.x, r.y, 1.1 + a * 0.8, 0, 6.283); }
-      ctx.fillStyle = "rgba(255,197,107,0.75)"; ctx.fill();
+      ctx.fillStyle = "rgba(217,188,133,0.75)"; ctx.fill();
       ctx.globalCompositeOperation = "source-over";
     }
     function frame(now) {
@@ -511,24 +511,24 @@
       ctx.clearRect(0, 0, W, H);
       const s = proj.scale(), [cx, cy] = proj.translate();
       const glow = ctx.createRadialGradient(cx, cy, s * 0.9, cx, cy, s * 1.18);
-      glow.addColorStop(0, "rgba(110,170,255,0.18)"); glow.addColorStop(1, "rgba(110,170,255,0)");
+      glow.addColorStop(0, "rgba(163,184,217,0.18)"); glow.addColorStop(1, "rgba(163,184,217,0)");
       ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(cx, cy, s * 1.18, 0, 6.283); ctx.fill();
       const ocean = ctx.createRadialGradient(cx - s * 0.35, cy - s * 0.4, s * 0.1, cx, cy, s);
-      ocean.addColorStop(0, "#2a5aa6"); ocean.addColorStop(1, "#163872");
+      ocean.addColorStop(0, "#2B3A66"); ocean.addColorStop(1, "#1A2446");
       ctx.beginPath(); path(sphere); ctx.fillStyle = ocean; ctx.fill();
-      ctx.beginPath(); path(grat); ctx.lineWidth = 0.5; ctx.strokeStyle = "rgba(142,197,255,0.08)"; ctx.stroke();
+      ctx.beginPath(); path(grat); ctx.lineWidth = 0.5; ctx.strokeStyle = "rgba(163,184,217,0.08)"; ctx.stroke();
       if (feats) {
-        ctx.beginPath(); path(land); ctx.fillStyle = "#3a5f98"; ctx.fill();
+        ctx.beginPath(); path(land); ctx.fillStyle = "#3A4670"; ctx.fill();
         for (const f of feats) {
           const g = showG && gbdSet.has(f.id), c = coreSet.has(f.id);
           if (!g && !c) continue;
-          ctx.beginPath(); path(f); ctx.fillStyle = c ? "rgba(110,170,255,0.32)" : "rgba(255,197,107,0.18)"; ctx.fill();
+          ctx.beginPath(); path(f); ctx.fillStyle = c ? "rgba(163,184,217,0.32)" : "rgba(217,188,133,0.18)"; ctx.fill();
         }
-        ctx.beginPath(); path(borders); ctx.lineWidth = 0.5; ctx.strokeStyle = "rgba(180,205,235,0.22)"; ctx.stroke();
+        ctx.beginPath(); path(borders); ctx.lineWidth = 0.5; ctx.strokeStyle = "rgba(205,208,220,0.22)"; ctx.stroke();
       }
-      ctx.beginPath(); path(sphere); ctx.lineWidth = 1; ctx.strokeStyle = "rgba(142,197,255,0.4)"; ctx.stroke();
+      ctx.beginPath(); path(sphere); ctx.lineWidth = 1; ctx.strokeStyle = "rgba(163,184,217,0.4)"; ctx.stroke();
       if (showG && N.gbd) {
-        ctx.fillStyle = "rgba(255,197,107,0.78)"; ctx.beginPath();
+        ctx.fillStyle = "rgba(217,188,133,0.78)"; ctx.beginPath();
         for (const [la, lo, n] of N.gbd.points) { if (!visible([lo, la])) continue; const p = proj([lo, la]); const rr = 1.1 + Math.sqrt(n) * 0.55; ctx.moveTo(p[0] + rr, p[1]); ctx.arc(p[0], p[1], rr, 0, 6.283); }
         ctx.fill();
       }
@@ -536,27 +536,27 @@
       for (const a of arcs) {
         const hot = sel && ((sel.lng === a.A[0] && sel.lat === a.A[1]) || (sel.lng === a.B[0] && sel.lat === a.B[1]));
         ctx.beginPath(); path({ type: "LineString", coordinates: [a.A, a.B] });
-        ctx.lineWidth = hot ? 2 : 1 + (a.n > 1 ? 0.6 : 0); ctx.strokeStyle = hot ? "rgba(255,255,255,0.85)" : a.home ? "rgba(228,107,220,0.55)" : "rgba(142,197,255,0.55)"; ctx.stroke();
+        ctx.lineWidth = hot ? 2 : 1 + (a.n > 1 ? 0.6 : 0); ctx.strokeStyle = hot ? "rgba(255,255,255,0.85)" : a.home ? "rgba(227,160,168,0.55)" : "rgba(163,184,217,0.55)"; ctx.stroke();
         if (!reduced) {
           for (let k = 0; k < 2; k++) {
             const t = (tt * 0.22 + a.off + k * 0.5) % 1, ll = a.ip(t);
             if (!visible(ll)) continue;
-            const p = proj(ll); ctx.beginPath(); ctx.arc(p[0], p[1], 2.1, 0, 6.283); ctx.fillStyle = a.home ? "#F3A6EE" : "#DCEBFF"; ctx.fill();
+            const p = proj(ll); ctx.beginPath(); ctx.arc(p[0], p[1], 2.1, 0, 6.283); ctx.fillStyle = a.home ? "#F2C8CD" : "#E3EAF5"; ctx.fill();
           }
         }
       }
       for (const c of C) {
         const ll = [c.lng, c.lat]; if (!visible(ll)) { c.px = null; continue; }
         const p = proj(ll); c.px = p;
-        const col = c.home ? "#E46BDC" : "#8EC5FF";
-        if (c.home && !reduced) { const ph = (tt % 2) / 2; ctx.beginPath(); ctx.arc(p[0], p[1], c.r + ph * 16, 0, 6.283); ctx.strokeStyle = `rgba(228,107,220,${0.6 * (1 - ph)})`; ctx.lineWidth = 1.5; ctx.stroke(); }
-        ctx.beginPath(); ctx.arc(p[0], p[1], c.r + 4, 0, 6.283); ctx.fillStyle = c.home ? "rgba(228,107,220,0.18)" : "rgba(142,197,255,0.18)"; ctx.fill();
+        const col = c.home ? "#E3A0A8" : "#A3B8D9";
+        if (c.home && !reduced) { const ph = (tt % 2) / 2; ctx.beginPath(); ctx.arc(p[0], p[1], c.r + ph * 16, 0, 6.283); ctx.strokeStyle = `rgba(227,160,168,${0.6 * (1 - ph)})`; ctx.lineWidth = 1.5; ctx.stroke(); }
+        ctx.beginPath(); ctx.arc(p[0], p[1], c.r + 4, 0, 6.283); ctx.fillStyle = c.home ? "rgba(227,160,168,0.18)" : "rgba(163,184,217,0.18)"; ctx.fill();
         ctx.beginPath(); ctx.arc(p[0], p[1], c.r, 0, 6.283); ctx.fillStyle = col; ctx.fill();
         if (c === sel || c === hover) { ctx.beginPath(); ctx.arc(p[0], p[1], c.r + 3, 0, 6.283); ctx.lineWidth = 2; ctx.strokeStyle = "#fff"; ctx.stroke(); }
       }
       if (sel && sel.px) {
         ctx.font = "600 13px 'IBM Plex Sans', sans-serif"; ctx.fillStyle = "#fff"; ctx.textBaseline = "middle";
-        ctx.shadowColor = "rgba(0,0,0,.8)"; ctx.shadowBlur = 6; ctx.fillText(sel.c, sel.px[0] + sel.r + 8, sel.px[1]); ctx.shadowBlur = 0;
+        ctx.shadowColor = "rgba(15,20,38,.8)"; ctx.shadowBlur = 6; ctx.fillText(sel.c, sel.px[0] + sel.r + 8, sel.px[1]); ctx.shadowBlur = 0;
       }
     }
     function frame(now) {
