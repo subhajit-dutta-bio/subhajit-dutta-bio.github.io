@@ -31,7 +31,7 @@ window.SITE.awards = [
   {group:"fellowship", sort:"2018", when:"2016 – 2018", title:"DBT Merit Scholarship", where:"Department of Biotechnology, India", note:"MSc Biotechnology, Banaras Hindu University."},
 
   // Community roles
-  {group:"role", sort:"2026", when:"2025 – present", title:"eLife Ambassador", where:"eLife"},
+  {group:"role", sort:"2026", when:"2025 – 2026", title:"eLife Ambassador", where:"eLife"},
   {group:"role", sort:"2026", when:"Current", title:"EACR Ambassador", where:"European Association for Cancer Research"},
   {group:"role", sort:"2026", when:"Current", title:"FocalPlane Correspondent", where:"The Company of Biologists"},
   {group:"role", sort:"2026", when:"Current", title:"Senior Collaborator", where:"Global Burden of Disease (GBD) network, IHME"},
