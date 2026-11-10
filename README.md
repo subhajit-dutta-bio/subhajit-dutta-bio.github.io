@@ -1,6 +1,24 @@
-# Personal website — how it works and how to launch it
+# Personal website — how it works
 
-Static site, no build step. Seven pages share one stylesheet (`assets/site.css`) and one script (`assets/site.js`).
+Static site on GitHub Pages. Pages share one stylesheet (`assets/site.css`) and one script (`assets/site.js`).
+Theme: **Fluorescence** (Nov 2026) — deep indigo ground, cyan for links and actions, magenta for highlights,
+green/magenta/cyan/violet as the four research "channels". Dark by default, no black anywhere.
+
+## The one rule: run the build after editing data
+
+```
+node tools/build.mjs
+```
+
+The build (Node 18+, no dependencies) renders publications, news, talks, awards, software, the CV,
+research figures and the home-page lists into the HTML as plain static markup, so search engines see
+everything without running JavaScript. It also shares one header and footer across every page, stamps
+the footer date, and writes `sitemap.xml` and `feed.xml` (RSS). It only rewrites what sits between
+`<!-- build:name -->` markers, so running it twice changes nothing. A GitHub Action
+(`.github/workflows/check-build.yml`) fails if you push data changes without rebuilding; it never deploys.
+
+Navigation and footer links live in `tools/partials/`. Edit them there, not in each page.
+
 All content you will ever change lives in `assets/data/`:
 
 | File | What it holds |
@@ -9,7 +27,9 @@ All content you will ever change lives in `assets/data/`:
 | `publications.js` | Every paper, preprint, review, patent. One object per entry; DOIs become links, BibTeX is generated |
 | `news.js` | Dated updates. Home page shows the three newest |
 | `talks.js` | Talks, posters, awards. Optional slides/poster/photo per entry |
-| `media.js` | Figures, posters, photos, portraits, PDFs for the Media gallery and the Research page |
+| `media.js` | Figures, posters, photos, portraits, PDFs for the Press kit gallery and the Research page |
+| `software.js` | Public repositories shown on /software/ |
+| `cv.js` | Positions, education and methods, used on Home, Research and the CV page |
 
 Page text (bio, research narratives, methods, collaboration offer) is plain HTML in each `index.html`.
 
@@ -43,11 +63,12 @@ Custom domain (optional, ~€10/year): add a file named `CNAME` containing the d
 
 ## 4. Adding things later
 
-- **New paper:** add an object at the top of the matching group in `publications.js`. Set `featured: true` on up to three you want on the home page.
+- **New paper:** add an object at the top of the matching group in `publications.js`. Set `featured: true` on up to three you want on the home page, `selected: true` for the default "Selected" view, and `fig:` for a thumbnail. Authorship badges (sole, first, co-first) are worked out from the author string. Then run the build.
 - **Figure or photo:** resize (`mogrify -resize 2000x2000\> -quality 82 file.jpg`), drop into `assets/img/`, add an entry to `media.js`. Give it `theme: "math"` (or telomere, imaging, pancancer) and it also appears beside that theme on the Research page.
 - **Paper PDF:** only for CC-BY papers (Frontiers, eLife, PLoS, bioRxiv). Put it in `assets/pdf/` and add `pdf: "/assets/pdf/...pdf"` to that entry. Do not host the Nature Reviews pieces, JBSD or JAMA Cardiology; link to them.
 - **Talk with slides:** add `slides: "/assets/pdf/..."` to the entry in `talks.js`.
-- Update `<lastmod>` in `sitemap.xml` after substantive changes.
+- `sitemap.xml`, `feed.xml` and the footer date are written by the build; do not edit them by hand.
+- **Moving to a new position:** edit `position` in `profile.js` (org, city, country), run the build.
 
 ## 5. Checking locally
 

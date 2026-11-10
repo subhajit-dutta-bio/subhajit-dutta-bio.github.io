@@ -74,9 +74,8 @@
     $$("[data-email]").forEach(n => { n.textContent = P.email || ""; });
     $$("[data-copy-email]").forEach(b => b.addEventListener("click", () => copyText(P.email, $("[data-email]"))));
     // Legal
-    if (P.updated) { const d = new Date(P.updated + "T12:00:00"); if (!isNaN(d)) $$("[data-updated]").forEach(n => { n.setAttribute("datetime", P.updated); n.textContent = d.toLocaleDateString("en-GB", {month: "long", year: "numeric"}); }); }
     const POS = P.position || {};
-    const posVal = { role: POS.role, city: POS.city, orgFull: POS.orgFull, place: [POS.city, POS.country].filter(Boolean).join(", "), now: [POS.role, POS.org].filter(Boolean).join(", ") };
+    const posVal = { role: POS.role, city: POS.city, orgFull: POS.orgFull, place: [POS.city, POS.country].filter(Boolean).join(", ") };
     $$("[data-pos]").forEach(n => { const v = posVal[n.dataset.pos]; if (v) n.textContent = v; });
     $$("[data-legal-address]").forEach(n => { n.textContent = P.legal && P.legal.address ? P.legal.address : ""; if (unset(P.legal && P.legal.address)) n.classList.add("todo"); });
     $$("[data-legal-phone]").forEach(n => { const ph = P.legal && P.legal.phone; if (ph) n.textContent = ph; else n.closest("p") && (n.closest("p").hidden = true); });
@@ -107,7 +106,7 @@
       W = Math.max(1, r.width); H = Math.max(1, r.height);
       canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       bg = ctx.createRadialGradient(W * 0.75, H * 0.4, 0, W * 0.75, H * 0.4, Math.max(W, H) * 0.9);
-      bg.addColorStop(0, "#25335E"); bg.addColorStop(0.55, "#1C284B"); bg.addColorStop(1, "#151E3A");
+      bg.addColorStop(0, "#1B2356"); bg.addColorStop(0.55, "#131A45"); bg.addColorStop(1, "#0D1330");
       maxF = Math.round(Math.min(small ? 520 : 1100, Math.max(220, W * H / 1000)));
       seed();
     }
@@ -164,27 +163,27 @@
       ctx.lineWidth = 1.05; ctx.lineCap = "round";
       buckets.forEach((b, k) => {
         if (!b.length) return;
-        ctx.strokeStyle = `rgba(159,195,232,${0.14 + k * 0.17})`;
+        ctx.strokeStyle = `rgba(70,211,230,${0.14 + k * 0.17})`;
         ctx.beginPath();
         for (const f of b) { ctx.moveTo(f.x, f.y); ctx.lineTo(f.x + Math.cos(f.a) * f.len, f.y + Math.sin(f.a) * f.len); }
         ctx.stroke();
       });
-      ctx.fillStyle = "rgba(225,236,250,0.85)"; ctx.beginPath();
+      ctx.fillStyle = "rgba(200,246,252,0.85)"; ctx.beginPath();
       for (const f of tips) { const x = f.x + Math.cos(f.a) * f.len, y = f.y + Math.sin(f.a) * f.len; ctx.moveTo(x + 1.6, y); ctx.arc(x, y, 1.6, 0, 6.283); }
       ctx.fill();
       for (const m of M) {
         ctx.save(); ctx.translate(m.x, m.y); ctx.rotate(m.a);
         const L = m.L, w = m.w, r = w / 2;
         ctx.beginPath(); ctx.moveTo(-L / 2 + r, -r); ctx.lineTo(L / 2 - r, -r); ctx.arc(L / 2 - r, 0, r, -Math.PI / 2, Math.PI / 2); ctx.lineTo(-L / 2 + r, r); ctx.arc(-L / 2 + r, 0, r, Math.PI / 2, Math.PI * 1.5); ctx.closePath();
-        ctx.fillStyle = "rgba(227,160,168,0.20)"; ctx.fill();
-        ctx.lineWidth = 1.4; ctx.strokeStyle = "rgba(232,170,178,0.85)"; ctx.stroke();
-        ctx.lineWidth = 0.9; ctx.strokeStyle = "rgba(242,200,205,0.55)"; ctx.beginPath();
+        ctx.fillStyle = "rgba(227,107,203,0.20)"; ctx.fill();
+        ctx.lineWidth = 1.4; ctx.strokeStyle = "rgba(232,120,210,0.85)"; ctx.stroke();
+        ctx.lineWidth = 0.9; ctx.strokeStyle = "rgba(245,190,235,0.55)"; ctx.beginPath();
         for (let k = 1; k <= m.cr; k++) { const x = -L / 2 + r + (k / (m.cr + 1)) * (L - w); const wob = Math.sin(t * 2 + k + m.ph) * 1.2; ctx.moveTo(x + wob, -r + 1.8); ctx.lineTo(x - wob, r - 1.8); }
         ctx.stroke(); ctx.restore();
       }
       ctx.beginPath();
       for (const r of R) { const a = 1 - r.age / r.life; ctx.moveTo(r.x + 1.5, r.y); ctx.arc(r.x, r.y, 1.1 + a * 0.8, 0, 6.283); }
-      ctx.fillStyle = "rgba(217,188,133,0.75)"; ctx.fill();
+      ctx.fillStyle = "rgba(242,184,75,0.75)"; ctx.fill();
       ctx.globalCompositeOperation = "source-over";
     }
     function frame(now) {
@@ -207,11 +206,7 @@
   })();
 
   /* ---------- Publications ---------- */
-  const PENDING_ST = ["under review", "submitted", "in preparation"];
-  const isPending = p => PENDING_ST.includes(p.status) && !p.doi && !p.url;
   const ALLPUBS = (S.pubs || []).slice();
-  const PUBS = ALLPUBS.filter(p => !isPending(p));
-  const PENDING = ALLPUBS.filter(isPending);
   function pubHref(p) { return p.url || (p.doi ? "https://doi.org/" + p.doi : null); }
   function bibtex(p) {
     const authors = strip(p.authors).replace(/\(.*?\)/g, "").replace(/\*/g, "").replace(/,?\s*et al\.?/i, " and others").split(/,\s*/).map(a => a.trim()).filter(Boolean);
@@ -228,127 +223,50 @@
     lines.push("}");
     return lines.join("\n");
   }
-  function pubNode(p) {
-    const li = el("li", {class: "pub", "data-type": p.type});
-    li.dataset.search = strip(`${p.title} ${p.authors} ${p.venue} ${p.year} ${p.note || ""}`).toLowerCase();
-    const h = pubHref(p);
-    const kindLabel = ({paper: "Article", review: "Manuscript", preprint: "Preprint", commentary: "Journal club", chapter: "Chapter", patent: "Patent", consortium: "Consortium"})[p.type] || "";
-    const status = p.status && p.status !== "published" ? `<span class="st">${esc(p.status)}</span>` : "";
-    const actions = [];
-    if (h) actions.push(`<a class="btn sm" href="${h}" target="_blank" rel="noopener">${p.doi ? "DOI" : "Link"}</a>`);
-    if (p.preprint) actions.push(`<a class="btn sm" href="https://doi.org/${p.preprint}" target="_blank" rel="noopener">Preprint</a>`);
-    if (p.pdf) actions.push(`<a class="btn sm" href="${p.pdf}" target="_blank" rel="noopener">PDF</a>`);
-    actions.push(`<button class="btn sm" type="button" data-bib>BibTeX</button>`);
-    li.innerHTML = `
-      <div class="pub-kind">${p.year}<br>${kindLabel}${status}</div>
-      <div>
-        <div class="pub-title">${h ? `<a href="${h}" target="_blank" rel="noopener">${p.title}</a>` : p.title}</div>
-        <div class="pub-authors">${p.authors}</div>
-        ${p.venue ? `<div class="pub-venue"><i>${p.venue}</i></div>` : ""}
-        ${p.take ? `<p class="pub-take">${p.take}</p>` : ""}
-        ${p.note ? `<div class="pub-note">${p.note}</div>` : ""}
-        <div class="pub-actions">${actions.join("")}</div>
-      </div>`;
-    $("[data-bib]", li).addEventListener("click", () => copyText(bibtex(p)));
-    return li;
-  }
   (function publications() {
+    // The list is rendered into the page by tools/build.mjs; this only adds filtering, search and BibTeX.
     const list = $("#pubList"); if (!list) return;
-    const filters = $("#pubFilters"), search = $("#pubSearch"), summary = $("#pubSummary");
-    const count = t => t === "all" ? PUBS.length : PUBS.filter(p => p.type === t).length;
-    if (summary) summary.textContent = `${count("paper")} peer-reviewed articles, ${count("preprint")} preprints, ${count("commentary")} Nature Reviews journal-club pieces, ${count("patent")} patent application and consortium authorship on Global Burden of Disease studies. Click BibTeX on any entry to copy a citation.`;
-    let type = "all", q = "";
-    const hash = location.hash.replace("#", ""); if ((S.pubTypes || []).some(([k]) => k === hash)) type = hash;
+    const filters = $("#pubFilters"), search = $("#pubSearch");
+    const items = $$(".pub", list);
+    const count = t => t === "all" ? items.length : t === "selected" ? items.filter(li => li.dataset.selected).length : items.filter(li => li.dataset.type === t).length;
+    let type = "selected", q = "";
+    const hash = location.hash.replace("#", "");
+    if ((S.pubTypes || []).some(([k]) => k === hash)) type = hash;
+    if (hash === "in-progress") type = "all";
     (S.pubTypes || []).forEach(([key, label]) => {
+      if (!count(key)) return;
       const b = el("button", {type: "button", class: "chip", "data-type": key, "aria-pressed": String(key === type)}, `${label}<span class="n">${count(key)}</span>`);
       b.addEventListener("click", () => { type = key; $$(".chip", filters).forEach(c => c.setAttribute("aria-pressed", String(c.dataset.type === key))); apply(); });
       filters.appendChild(b);
     });
-    PUBS.sort((a, b) => b.year - a.year);
-    const frag = document.createDocumentFragment(); let year = null;
-    PUBS.forEach(p => { if (p.year !== year) { year = p.year; frag.appendChild(el("li", {class: "pub-year-head", "data-year": year}, String(year))); } frag.appendChild(pubNode(p)); });
-    list.appendChild(frag);
-    const empty = el("li", {class: "pub-empty"}, "Nothing matches that filter."); empty.hidden = true; list.appendChild(empty);
-    if (search) search.addEventListener("input", () => { q = search.value.trim().toLowerCase(); apply(); });
+    items.forEach(li => { const p = ALLPUBS[Number(li.dataset.i)]; const b = $("[data-bib]", li); if (p && b) b.addEventListener("click", () => copyText(bibtex(p))); });
+    const empty = $(".pub-empty", list);
+    if (search) search.addEventListener("input", () => { q = search.value.trim().toLowerCase(); if (q && type === "selected") { type = "all"; $$(".chip", filters).forEach(c => c.setAttribute("aria-pressed", String(c.dataset.type === "all"))); } apply(); });
     function apply() {
       let shown = 0;
-      $$(".pub", list).forEach(li => { const ok = (type === "all" || li.dataset.type === type) && (!q || li.dataset.search.includes(q)); li.hidden = !ok; if (ok) shown++; });
+      items.forEach(li => { const okType = type === "all" || (type === "selected" ? !!li.dataset.selected : li.dataset.type === type); const ok = okType && (!q || li.dataset.search.includes(q)); li.hidden = !ok; if (ok) shown++; });
       $$(".pub-year-head", list).forEach(h => { let n = h.nextElementSibling, any = false; while (n && n.classList.contains("pub")) { if (!n.hidden) { any = true; break; } n = n.nextElementSibling; } h.hidden = !any; });
-      empty.hidden = shown > 0;
+      if (empty) empty.hidden = shown > 0;
     }
     apply();
     const pend = $("#pubPending");
-    if (pend && PENDING.length) {
-      $("[data-pending-n]", pend).textContent = PENDING.length;
-      const ol = $("ol", pend);
-      PENDING.sort((a, b) => b.year - a.year).forEach(p => ol.appendChild(el("li", {class: "pend"}, `<div class="pub-title">${p.title}</div><div class="pub-authors">${p.authors}</div><div class="pub-note">${esc(p.note || "Manuscript")} · ${esc(p.status)}</div>`)));
-      if (location.hash === "#in-progress") pend.open = true;
-    } else if (pend) pend.hidden = true;
-  })();
-  (function featured() {
-    const host = $("#featuredPubs"); if (!host) return;
-    const picks = PUBS.filter(p => p.featured).sort((a, b) => b.year - a.year).slice(0, 3);
-    picks.forEach(p => {
-      const h = pubHref(p) || (p.preprint ? "https://doi.org/" + p.preprint : "/publications/");
-      host.appendChild(el("article", null, `<div class="k">${esc(strip(p.venue).split(",")[0])}, ${p.year}${p.status && p.status !== "published" ? `, ${esc(p.status)}` : ""}</div><h3><a href="${h}" ${h.startsWith("http") ? 'target="_blank" rel="noopener"' : ""}>${p.title}</a></h3><p>${p.authors}</p>${p.take ? `<p class="feat-take">${p.take}</p>` : ""}`));
-    });
+    if (pend && location.hash === "#in-progress") pend.open = true;
   })();
 
-  /* ---------- News ---------- */
-  (function news() {
-    const items = (S.news || []).slice().sort((a, b) => b.date.localeCompare(a.date));
-    const fmt = d => { const [y, m, day] = d.split("-").map(Number); return new Date(Date.UTC(y, m - 1, day || 1)).toLocaleDateString("en-GB", {day: day ? "numeric" : undefined, month: "long", year: "numeric", timeZone: "UTC"}); };
-    const render = (host, limit) => {
-      if (!host) return;
-      items.slice(0, limit || items.length).forEach(n => {
-        host.appendChild(el("li", {class: "row"}, `<div class="row-when">${fmt(n.date)}</div><div><div class="row-what news-text">${n.text}${n.url ? ` <a href="${n.url}" target="_blank" rel="noopener" class="small">Read</a>` : ""}</div></div>`));
-      });
-    };
-    render($("#newsList")); render($("#newsLatest"), 3);
-  })();
-
-  /* ---------- Talks ---------- */
+  /* ---------- Talks (rendered by the build; filters and photo viewer here) ---------- */
   (function talks() {
     const host = $("#talksList"); if (!host) return;
-    const filters = $("#talkFilters");
-    const items = (S.talks || []).slice().sort((a, b) => b.sort.localeCompare(a.sort));
-    const node = t => {
-      const acts = [];
-      if (t.url) acts.push(`<a class="btn sm" href="${t.url}" target="_blank" rel="noopener">Abstract</a>`);
-      if (t.slides) acts.push(`<a class="btn sm" href="${t.slides}" target="_blank" rel="noopener">Slides</a>`);
-      if (t.poster) acts.push(`<a class="btn sm" href="${t.poster}" target="_blank" rel="noopener">Poster</a>`);
-      if (t.photo) acts.push(`<button class="btn sm" type="button" data-photo="${t.photo}">Photo</button>`);
-      const li = el("li", {class: "row", "data-kind": t.kind}, `<div class="row-when">${esc(t.when)}<br><span class="small">${t.kind === "talk" ? "Talk" : "Poster"}</span></div><div><div class="row-title">${esc(t.title)}</div><div class="row-where">${esc(t.where)}</div>${t.what ? `<p class="row-what">${t.what}</p>` : ""}${t.tag ? `<span class="row-tag">${esc(t.tag)}</span>` : ""}${acts.length ? `<div class="row-actions">${acts.join("")}</div>` : ""}</div>`);
-      const pb = $("[data-photo]", li); if (pb) pb.addEventListener("click", () => openLightbox([{src: t.photo, caption: t.title}], 0));
-      return li;
-    };
-    items.forEach(t => host.appendChild(node(t)));
+    const filters = $("#talkFilters"), rows = $$(".row", host);
+    $$("[data-photo]", host).forEach(b => b.addEventListener("click", () => openLightbox([{src: b.dataset.photo, caption: b.dataset.caption}], 0)));
     if (filters) {
       let kind = "all";
       [["all", "All"], ["talk", "Talks"], ["poster", "Posters"]].forEach(([k, label]) => {
-        const n = k === "all" ? items.length : items.filter(t => t.kind === k).length;
+        const n = k === "all" ? rows.length : rows.filter(r => r.dataset.kind === k).length;
         const b = el("button", {type: "button", class: "chip", "data-kind": k, "aria-pressed": String(k === kind)}, `${label}<span class="n">${n}</span>`);
-        b.addEventListener("click", () => { kind = k; $$(".chip", filters).forEach(c => c.setAttribute("aria-pressed", String(c.dataset.kind === k))); $$(".row", host).forEach(li => li.hidden = kind !== "all" && li.dataset.kind !== kind); });
+        b.addEventListener("click", () => { kind = k; $$(".chip", filters).forEach(c => c.setAttribute("aria-pressed", String(c.dataset.kind === k))); rows.forEach(li => li.hidden = kind !== "all" && li.dataset.kind !== kind); });
         filters.appendChild(b);
       });
     }
-  })();
-
-  /* ---------- Awards ---------- */
-  (function awards() {
-    const groupsHost = $("#awardGroups"); if (!groupsHost) return;
-    const items = (S.awards || []).slice().sort((a, b) => String(b.sort).localeCompare(String(a.sort)));
-    const cards = $("#awardCards");
-    if (cards) items.filter(a => a.highlight).slice(0, 3).forEach(a => cards.appendChild(el("article", {class: "award-card"},
-      `<div class="award-year">${esc(a.when)}</div><h3>${esc(a.title)}</h3>${a.where ? `<p>${esc(a.where)}</p>` : ""}`)));
-    (S.awardGroups || []).forEach(([key, label]) => {
-      const list = items.filter(a => a.group === key); if (!list.length) return;
-      const sec = el("section", {class: "section", "aria-label": label});
-      sec.innerHTML = `<div class="wrap"><div class="section-head"><h2>${esc(label)}</h2></div><ol class="rows"></ol></div>`;
-      const ol = $("ol", sec);
-      list.forEach(a => ol.appendChild(el("li", {class: "row"}, `<div class="row-when">${esc(a.when)}</div><div><div class="row-title">${esc(a.title)}</div>${a.where ? `<div class="row-where">${esc(a.where)}</div>` : ""}${a.note ? `<p class="row-what">${esc(a.note)}</p>` : ""}</div>`)));
-      groupsHost.appendChild(sec);
-    });
   })();
 
   /* ---------- Gentle reveal on scroll ---------- */
@@ -403,24 +321,39 @@
       filters.appendChild(b);
     });
   })();
-  (function themeFigures() {
-    $$("[data-theme-fig]").forEach(fig => {
-      const m = MEDIA.find(x => x.theme === fig.dataset.themeFig && (x.type || "image") === "image");
-      if (!m) { fig.hidden = true; return; }
-      const dims = m.w && m.h ? ` width="${m.w}" height="${m.h}"` : "";
-      const credit = m.credit ? `<span class="fig-credit">${m.link ? `<a href="${m.link}" target="_blank" rel="noopener">${esc(m.credit)}</a>` : esc(m.credit)}</span>` : "";
-      fig.innerHTML = `<figure><img src="${m.src}" alt="${esc(m.caption || "")}" loading="lazy" decoding="async"${dims}><figcaption>${esc(m.caption || "")}${credit}</figcaption></figure>`;
-      $("img", fig).addEventListener("click", () => openLightbox([m], 0));
-    });
+  (function figureZoom() {
+    $$("img[data-lightbox]").forEach(img => img.addEventListener("click", () => {
+      const fc = img.closest("figure") && $("figcaption", img.closest("figure"));
+      openLightbox([{src: img.getAttribute("src"), caption: img.alt}], 0);
+    }));
   })();
 
-  /* ---------- Home profile card: live network counts ---------- */
-  (function netCounts() {
-    const N = S.network; if (!N || !$("[data-net]")) return;
-    const k = s => s.toLowerCase().replace(/[^a-z]/g, "");
-    const v = { inst: N.inst.length, countries: new Set(N.inst.map(i => i.cc)).size, people: new Set(N.inst.flatMap(i => i.a).map(k)).size };
-    $$("[data-net]").forEach(n => { n.textContent = v[n.dataset.net]; });
+  /* ---------- One-cell explorer (home) ---------- */
+  (function explorer() {
+    const ex = $("#explorer"); if (!ex) return;
+    const tabs = $$("[role=tab]", ex), cards = $$(".ex-card", ex);
+    function set(ch, focus) {
+      ex.dataset.active = ch;
+      tabs.forEach(t => { const on = t.dataset.ch === ch; t.setAttribute("aria-selected", String(on)); t.tabIndex = on ? 0 : -1; if (on && focus) t.focus(); });
+      cards.forEach(c => { c.hidden = c.dataset.ch !== ch; });
+    }
+    tabs.forEach((t, i) => {
+      t.addEventListener("click", () => set(t.dataset.ch));
+      t.addEventListener("keydown", e => {
+        const k = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0; if (!k) return;
+        e.preventDefault(); set(tabs[(i + k + tabs.length) % tabs.length].dataset.ch, true);
+      });
+    });
+    $$(".ch", ex).forEach(g => {
+      g.addEventListener("click", () => set(g.dataset.ch));
+      g.addEventListener("mouseenter", () => set(g.dataset.ch));
+    });
+    $$("[data-goto]").forEach(a => a.addEventListener("click", () => set(a.dataset.goto)));
   })();
+
+  /* ---------- Small helpers: copy a bio, print the CV ---------- */
+  $$("[data-copy-target]").forEach(b => b.addEventListener("click", () => { const t = document.getElementById(b.dataset.copyTarget); if (t) copyText(t.textContent.trim(), t); }));
+  $$("[data-print]").forEach(b => b.addEventListener("click", () => window.print()));
 
   /* ---------- Collaboration globe (Collaborate page) ---------- */
   (function globe() {
@@ -511,24 +444,24 @@
       ctx.clearRect(0, 0, W, H);
       const s = proj.scale(), [cx, cy] = proj.translate();
       const glow = ctx.createRadialGradient(cx, cy, s * 0.9, cx, cy, s * 1.18);
-      glow.addColorStop(0, "rgba(163,184,217,0.18)"); glow.addColorStop(1, "rgba(163,184,217,0)");
+      glow.addColorStop(0, "rgba(70,211,230,0.18)"); glow.addColorStop(1, "rgba(70,211,230,0)");
       ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(cx, cy, s * 1.18, 0, 6.283); ctx.fill();
       const ocean = ctx.createRadialGradient(cx - s * 0.35, cy - s * 0.4, s * 0.1, cx, cy, s);
-      ocean.addColorStop(0, "#2B3A66"); ocean.addColorStop(1, "#1A2446");
+      ocean.addColorStop(0, "#1C2458"); ocean.addColorStop(1, "#10163A");
       ctx.beginPath(); path(sphere); ctx.fillStyle = ocean; ctx.fill();
-      ctx.beginPath(); path(grat); ctx.lineWidth = 0.5; ctx.strokeStyle = "rgba(163,184,217,0.08)"; ctx.stroke();
+      ctx.beginPath(); path(grat); ctx.lineWidth = 0.5; ctx.strokeStyle = "rgba(70,211,230,0.08)"; ctx.stroke();
       if (feats) {
-        ctx.beginPath(); path(land); ctx.fillStyle = "#3A4670"; ctx.fill();
+        ctx.beginPath(); path(land); ctx.fillStyle = "#2A3266"; ctx.fill();
         for (const f of feats) {
           const g = showG && gbdSet.has(f.id), c = coreSet.has(f.id);
           if (!g && !c) continue;
-          ctx.beginPath(); path(f); ctx.fillStyle = c ? "rgba(163,184,217,0.32)" : "rgba(217,188,133,0.18)"; ctx.fill();
+          ctx.beginPath(); path(f); ctx.fillStyle = c ? "rgba(70,211,230,0.32)" : "rgba(242,184,75,0.18)"; ctx.fill();
         }
         ctx.beginPath(); path(borders); ctx.lineWidth = 0.5; ctx.strokeStyle = "rgba(205,208,220,0.22)"; ctx.stroke();
       }
-      ctx.beginPath(); path(sphere); ctx.lineWidth = 1; ctx.strokeStyle = "rgba(163,184,217,0.4)"; ctx.stroke();
+      ctx.beginPath(); path(sphere); ctx.lineWidth = 1; ctx.strokeStyle = "rgba(70,211,230,0.4)"; ctx.stroke();
       if (showG && N.gbd) {
-        ctx.fillStyle = "rgba(217,188,133,0.78)"; ctx.beginPath();
+        ctx.fillStyle = "rgba(242,184,75,0.78)"; ctx.beginPath();
         for (const [la, lo, n] of N.gbd.points) { if (!visible([lo, la])) continue; const p = proj([lo, la]); const rr = 1.1 + Math.sqrt(n) * 0.55; ctx.moveTo(p[0] + rr, p[1]); ctx.arc(p[0], p[1], rr, 0, 6.283); }
         ctx.fill();
       }
@@ -536,27 +469,27 @@
       for (const a of arcs) {
         const hot = sel && ((sel.lng === a.A[0] && sel.lat === a.A[1]) || (sel.lng === a.B[0] && sel.lat === a.B[1]));
         ctx.beginPath(); path({ type: "LineString", coordinates: [a.A, a.B] });
-        ctx.lineWidth = hot ? 2 : 1 + (a.n > 1 ? 0.6 : 0); ctx.strokeStyle = hot ? "rgba(255,255,255,0.85)" : a.home ? "rgba(227,160,168,0.55)" : "rgba(163,184,217,0.55)"; ctx.stroke();
+        ctx.lineWidth = hot ? 2 : 1 + (a.n > 1 ? 0.6 : 0); ctx.strokeStyle = hot ? "rgba(255,255,255,0.85)" : a.home ? "rgba(227,107,203,0.55)" : "rgba(70,211,230,0.55)"; ctx.stroke();
         if (!reduced) {
           for (let k = 0; k < 2; k++) {
             const t = (tt * 0.22 + a.off + k * 0.5) % 1, ll = a.ip(t);
             if (!visible(ll)) continue;
-            const p = proj(ll); ctx.beginPath(); ctx.arc(p[0], p[1], 2.1, 0, 6.283); ctx.fillStyle = a.home ? "#F2C8CD" : "#E3EAF5"; ctx.fill();
+            const p = proj(ll); ctx.beginPath(); ctx.arc(p[0], p[1], 2.1, 0, 6.283); ctx.fillStyle = a.home ? "#F5B8E8" : "#C8F6FC"; ctx.fill();
           }
         }
       }
       for (const c of C) {
         const ll = [c.lng, c.lat]; if (!visible(ll)) { c.px = null; continue; }
         const p = proj(ll); c.px = p;
-        const col = c.home ? "#E3A0A8" : "#A3B8D9";
-        if (c.home && !reduced) { const ph = (tt % 2) / 2; ctx.beginPath(); ctx.arc(p[0], p[1], c.r + ph * 16, 0, 6.283); ctx.strokeStyle = `rgba(227,160,168,${0.6 * (1 - ph)})`; ctx.lineWidth = 1.5; ctx.stroke(); }
-        ctx.beginPath(); ctx.arc(p[0], p[1], c.r + 4, 0, 6.283); ctx.fillStyle = c.home ? "rgba(227,160,168,0.18)" : "rgba(163,184,217,0.18)"; ctx.fill();
+        const col = c.home ? "#E36BCB" : "#46D3E6";
+        if (c.home && !reduced) { const ph = (tt % 2) / 2; ctx.beginPath(); ctx.arc(p[0], p[1], c.r + ph * 16, 0, 6.283); ctx.strokeStyle = `rgba(227,107,203,${0.6 * (1 - ph)})`; ctx.lineWidth = 1.5; ctx.stroke(); }
+        ctx.beginPath(); ctx.arc(p[0], p[1], c.r + 4, 0, 6.283); ctx.fillStyle = c.home ? "rgba(227,107,203,0.18)" : "rgba(70,211,230,0.18)"; ctx.fill();
         ctx.beginPath(); ctx.arc(p[0], p[1], c.r, 0, 6.283); ctx.fillStyle = col; ctx.fill();
         if (c === sel || c === hover) { ctx.beginPath(); ctx.arc(p[0], p[1], c.r + 3, 0, 6.283); ctx.lineWidth = 2; ctx.strokeStyle = "#fff"; ctx.stroke(); }
       }
       if (sel && sel.px) {
         ctx.font = "600 13px 'IBM Plex Sans', sans-serif"; ctx.fillStyle = "#fff"; ctx.textBaseline = "middle";
-        ctx.shadowColor = "rgba(15,20,38,.8)"; ctx.shadowBlur = 6; ctx.fillText(sel.c, sel.px[0] + sel.r + 8, sel.px[1]); ctx.shadowBlur = 0;
+        ctx.shadowColor = "rgba(6,9,28,.8)"; ctx.shadowBlur = 6; ctx.fillText(sel.c, sel.px[0] + sel.r + 8, sel.px[1]); ctx.shadowBlur = 0;
       }
     }
     function frame(now) {

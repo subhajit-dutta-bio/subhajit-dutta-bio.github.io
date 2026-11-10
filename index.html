@@ -5,15 +5,15 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.web3forms.com; form-action 'self' https://api.web3forms.com; base-uri 'self'; object-src 'none'; frame-src 'none'; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Subhajit Dutta | Cancer biologist: telomeres, mitochondria and ageing</title>
-<meta name="description" content="Subhajit Dutta is a cancer cell and molecular biologist in Hamburg studying how telomere biology, mitochondrial function and developmental programmes shape tumour growth, immunity and metastasis, using imaging, genomics and computation.">
+<title>Subhajit Dutta — Telomeres and mitochondria in ageing and cancer</title>
+<meta name="description" content="Subhajit Dutta is an experimental cancer biologist and data-driven informatician in Hamburg, working on telomeres, mitochondria, cell migration and cancer omics, with large-scale multi-omics, high-content image analysis and tool building.">
 <meta name="author" content="Subhajit Dutta">
 <link rel="me" href="https://orcid.org/0000-0003-2390-7492">
 <link rel="preload" as="image" href="/assets/img/portrait.webp" fetchpriority="high">
 <link rel="canonical" href="https://duttasubhajit.com/">
 <meta property="og:type" content="profile">
-<meta property="og:title" content="Subhajit Dutta | Cancer biologist: telomeres, mitochondria and ageing">
-<meta property="og:description" content="Subhajit Dutta is a cancer cell and molecular biologist in Hamburg studying how telomere biology, mitochondrial function and developmental programmes shape tumour growth, immunity and metastasis, using imaging, genomics and computation.">
+<meta property="og:title" content="Subhajit Dutta — Telomeres and mitochondria in ageing and cancer">
+<meta property="og:description" content="Subhajit Dutta is an experimental cancer biologist and data-driven informatician in Hamburg, working on telomeres, mitochondria, cell migration and cancer omics, with large-scale multi-omics, high-content image analysis and tool building.">
 <meta property="og:url" content="https://duttasubhajit.com/">
 <meta property="og:site_name" content="Subhajit Dutta">
 <meta property="og:image" content="https://duttasubhajit.com/assets/img/og.jpg">
@@ -50,7 +50,7 @@
    "isPartOf": {
     "@id": "https://duttasubhajit.com/#website"
    },
-   "dateModified": "2026-10-20T15:00:00+02:00",
+   "dateModified": "2026-11-10",
    "mainEntity": {
     "@id": "https://duttasubhajit.com/#person"
    }
@@ -65,19 +65,11 @@
     "S. Dutta",
     "Dutta S"
    ],
-   "description": "Cancer cell and molecular biologist studying how telomere biology, mitochondrial function and developmental programmes shape tumour growth, immunity and metastasis.",
+   "description": "Experimental cancer biologist (telomeres, mitochondria, cell migration, cancer omics) and data-driven informatician (large-scale multi-omics, high-content image analysis, integrated omics and imaging, tool building).",
    "jobTitle": "Researcher",
    "url": "https://duttasubhajit.com/",
    "image": "https://duttasubhajit.com/assets/img/portrait.webp",
    "email": "mailto:dsubhajit.edu@gmail.com",
-   "affiliation": {
-    "@type": "Organization",
-    "name": "University Medical Center Hamburg-Eppendorf (UKE)",
-    "department": {
-     "@type": "Organization",
-     "name": "Institute of Biochemistry and Molecular Cell Biology (IBMZ)"
-    }
-   },
    "alumniOf": [
     {
      "@type": "CollegeOrUniversity",
@@ -170,15 +162,17 @@
 </script>
 <link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/fraunces-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+<!-- build:headextra -->
+<link rel="alternate" type="application/rss+xml" title="Subhajit Dutta: news" href="/feed.xml">
+<link rel="preload" href="/assets/fonts/ibm-plex-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<!-- /build:headextra -->
 <link rel="stylesheet" href="/assets/site.css">
 <script src="/assets/data/profile.js" defer></script>
-<script src="/assets/data/news.js" defer></script>
-<script src="/assets/data/publications.js" defer></script>
-<script src="/assets/data/network.js" defer></script>
 <script src="/assets/site.js" defer></script>
 </head>
 <body data-page="home">
 <a class="skip" href="#main">Skip to content</a>
+<!-- build:header -->
 <header class="nav">
   <div class="wrap nav-top">
     <a class="brand" href="/" aria-label="Subhajit Dutta, home">
@@ -201,18 +195,19 @@
   <nav class="nav-tabs" aria-label="Sections">
     <div class="wrap">
       <ul class="tabs" id="tabs">
-        <li><a href="/" data-page="home">Home</a></li>
+        <li><a href="/" data-page="home" aria-current="page">Home</a></li>
         <li><a href="/research/" data-page="research">Research</a></li>
         <li><a href="/publications/" data-page="publications">Publications</a></li>
+        <li><a href="/software/" data-page="software">Software</a></li>
         <li><a href="/talks/" data-page="talks">Talks</a></li>
         <li><a href="/awards/" data-page="awards">Awards</a></li>
-        <li><a href="/media/" data-page="media">Media</a></li>
-        <li><a href="/news/" data-page="news">News</a></li>
+        <li><a href="/cv/" data-page="cv">CV</a></li>
         <li><a href="/collaborate/" data-page="collaborate">Collaborate</a></li>
       </ul>
     </div>
   </nav>
 </header>
+<!-- /build:header -->
 <main id="main">
 
 <section class="hero" aria-labelledby="name">
@@ -223,45 +218,40 @@
       <p class="eyebrow">Cancer cell &amp; molecular biologist<span class="hide-sm"> · <span data-pos="city">Hamburg</span></span></p>
       <h1 id="name">Subhajit Dutta</h1>
       <p class="name-meta"><span>he/him</span><span aria-hidden="true">·</span><span>pronounced <q>Shuvo</q> <span class="say">(SHOO-bho)</span></span></p>
-      <p class="hero-lede">Telomeres, mitochondria and ageing in cancer, read through imaging and computation.</p>
-      <p class="hero-text">Welcome. I study how telomere biology and mitochondrial function, two systems that change with age, shape what cancer cells become, how they move and how they talk to the immune system. I pair hands-on molecular cell biology and super-resolution microscopy with variational optical flow, deep learning and large-scale public genomic data.</p>
-      <p class="hero-text">One line of my work concerns mitochondria at the leading edge of migrating cancer cells, where I identified a mitochondria-associated translational hotspot: a site of local protein synthesis at the cell front. Earlier, we showed that telomere length regulates genes far from chromosome ends through non-telomeric binding of the shelterin protein TRF2: telomere-length-dependent TRF2 occupancy at the <i>IL1R1</i> promoter tunes NF-κB-driven immune signalling in breast tumours, and TRF2 at the <i>TERT</i> promoter controls telomerase expression itself (eLife, 2024 and 2025). I have since extended this to telomere-maintenance and senescence programmes in human immune ageing.</p>
-      <p class="hero-text">Alongside experiments I build quantitative and computational tools across scales: biophysical analysis of the actin cytoskeleton by variational optical flow and nematic order; pan-cancer integration of TCGA, DepMap and CPTAC with single-cell and spatial transcriptomics and proteomics; gene regulation from expression to chromatin structure, looping and transcription-factor occupancy; and image analysis from histopathology to high-content 4D light-sheet and 5D live-cell FLIM data. The thread through all of it is one question: how telomere biology, mitochondrial function and developmental (oncofetal) programmes together decide what a cancer cell becomes (tumorigenesis) and where it goes (metastasis). If that overlaps with your work, I would be glad to hear from you.</p>
+      <p class="hero-lede">Telomeres and mitochondria in ageing and in cancer, read through imaging and computation.</p>
+      <div class="hero-roles">
+        <div class="hero-role role-bench">
+          <p class="role-k">Experimental biologist</p>
+          <p class="role-v">I study telomeres and mitochondria in ageing and in cancer: how the shelterin protein TRF2 regulates genes away from chromosome ends, and how mitochondria organise local translation at the leading edge of migrating cancer cells, through molecular cell biology, live-cell and super-resolution imaging, and cancer omics.</p>
+        </div>
+        <div class="hero-role role-data">
+          <p class="role-k">Data-driven informatician</p>
+          <p class="role-v">I build and apply methods for biology at scale: large multi-omics cohorts such as TCGA, DepMap and CPTAC, single-cell and spatial transcriptomics, and high-content image screens. I integrate omics with imaging, and turn the pipelines I write into open tools that others can reuse.</p>
+        </div>
+      </div>
       <div class="hero-actions">
         <a class="btn primary" href="/research/">Explore the research</a>
         <a class="btn ghost" href="/collaborate/">Work with me</a>
+        <a class="btn ghost" href="/cv/">CV</a>
       </div>
     </div>
     <aside class="hero-side">
       <div class="portrait" id="portrait">
         <img src="/assets/img/portrait.webp" alt="Subhajit Dutta" width="900" height="1202" fetchpriority="high">
       </div>
-      <div class="profile-card">
-        <div>
-          <p class="pc-role"><span data-pos="role">Researcher</span> · <span data-pos="place">Hamburg, Germany</span></p>
-          <ul class="pc-tags" aria-label="Research keywords">
-            <li class="core">Mitochondria</li><li class="core">Actin</li><li class="core">Ribosome</li><li class="core">Cell migration</li><li class="core">Oncofetal</li><li class="core">Transcription factors</li><li class="core">Telomeres</li><li class="core">Shelterin</li><li class="core">Cancer</li>
-            <li>Local translation</li><li>Tumour immunology</li><li>Mechanobiology</li><li>Senescence &amp; ageing</li><li>Systems biology</li><li>Spatial transcriptomics</li><li>Quantitative imaging</li>
-          </ul>
-        </div>
-        <a class="pc-net" href="/collaborate/#h-net" aria-label="See the collaboration network (excludes Global Burden of Disease consortium papers)" title="Counts exclude Global Burden of Disease consortium papers">
-          <span><b data-net="inst">24</b>institutions on my papers</span>
-          <span><b data-net="countries">7</b>countries</span>
-          <span><b data-net="people">44</b>co-authors</span>
-        </a>
-      </div>
     </aside>
   </div>
-  <p class="hero-caption wrap"><span class="cap"><i class="dot dot-actin"></i>Branched actin network at the leading edge</span><span class="cap"><i class="dot dot-mito"></i>Mitochondria</span><span class="cap"><i class="dot dot-ribo"></i>Local translation</span></p>
+  <p class="hero-caption wrap"><span class="cap cap-k">Live model</span><span class="cap"><i class="dot dot-actin"></i>Branched actin at the leading edge</span><span class="cap"><i class="dot dot-mito"></i>Mitochondria</span><span class="cap"><i class="dot dot-ribo"></i>Local translation</span></p>
 </section>
 
-<section class="section flush" aria-label="Now">
+<section class="section flush now-section" aria-label="Now">
   <div class="wrap">
     <div class="now">
-      <div><div class="k">Now</div><div class="v" data-pos="now">Researcher, Institute of Biochemistry and Molecular Cell Biology, UKE Hamburg</div></div>
-      <div><div class="k">Focus</div><div class="v"><a href="/research/">Telomeres, mitochondria and ageing in cancer</a></div></div>
+      <div><div class="k">Now</div><div class="v"><!-- build:now -->Researcher in cancer biology and computation<!-- /build:now --></div></div>
+      <div><div class="k">Focus</div><div class="v"><a href="/research/">Telomeres and mitochondria in ageing and cancer</a></div></div>
       <div><div class="k">Open to</div><div class="v"><a href="/collaborate/">Collaborations on omics and imaging data</a></div></div>
     </div>
+    <p class="record"><!-- build:stats --><a href="/publications/"><b>10</b> first- or sole-author papers and preprints</a><span aria-hidden="true">·</span><a href="/collaborate/#h-net"><b>24</b> institutions</a><span aria-hidden="true">·</span><a href="/collaborate/#h-net"><b>7</b> countries</a><span aria-hidden="true">·</span><a href="/collaborate/#h-net"><b>44</b> co-authors</a><!-- /build:stats --></p>
   </div>
 </section>
 
@@ -269,9 +259,11 @@
   <div class="wrap">
     <div class="section-head">
       <h2 id="h-latest">Latest</h2>
-      <p class="section-intro">Recent preprints, accepted papers and meetings.</p>
+      <p class="section-intro">Recent papers, preprints and meetings. <a href="/feed.xml">Follow by RSS</a>.</p>
     </div>
-    <ul class="rows" id="newsLatest"></ul>
+    <ul class="rows" id="newsLatest"><!-- build:latest --><li class="row"><div class="row-when"><time datetime="2026-11-03">3 November 2026</time></div><div><div class="row-what news-text">Sole-author paper accepted in <i>Frontiers in Aging</i>: transcriptional signatures of senescence and telomere biology across immune cell types during human ageing.</div></div></li>
+      <li class="row"><div class="row-when"><time datetime="2026-10-27">27 October 2026</time></div><div><div class="row-what news-text">Review with Namrata Maity (Ariel University) published in <i>Frontiers in Pharmacology</i>: the mitochondrion as a mechanometabolic conductor of cancer metastasis, with pharmacological insights from the mitochondria–peroxisome interface. <a href="https://doi.org/10.3389/fphar.2026.1983363" target="_blank" rel="noopener" class="small">Read</a></div></div></li>
+      <li class="row"><div class="row-when"><time datetime="2026-10-01">1 October 2026</time></div><div><div class="row-what news-text">Our review on the mitochondria–peroxisome interface in cancer metastasis (with Namrata Maity) has been accepted in <i>Frontiers in Pharmacology</i>. <a href="https://www.frontiersin.org/journals/pharmacology/articles/10.3389/fphar.2026.1983363/full" target="_blank" rel="noopener" class="small">Read</a></div></div></li><!-- /build:latest --></ul>
     <div class="section-foot"><a class="btn" href="/news/">All news</a></div>
   </div>
 </section>
@@ -282,38 +274,82 @@
       <h2 id="h-selected">Selected work</h2>
       <p class="section-intro">Three papers that show the range: a co-first-author mechanism paper, a follow-up on telomerase regulation, and a sole-author quantitative study of cell migration.</p>
     </div>
-    <div class="featured" id="featuredPubs"></div>
+    <div class="featured" id="featuredPubs"><!-- build:featured --><article><a class="feat-fig" href="https://doi.org/10.64898/2026.07.16.739021" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="/assets/img/fig/ga-migration-biorxiv2026.webp" alt="" loading="lazy" decoding="async"></a><div class="k"><span class="mono">bioRxiv · 2026</span><span class="badge badge-sole">Sole author</span></div><h3><a href="https://doi.org/10.64898/2026.07.16.739021" target="_blank" rel="noopener">Temporal order separates generic persistence from cue-directed commitment in cell migration</a></h3><p><b>Dutta S</b></p><p class="feat-take">Comparing each cell track with the same steps reshuffled shows how much persistence comes from the order of movements, separating how much a cell moves from whether it stays committed to an external cue.</p></article>
+      <article><a class="feat-fig" href="https://elifesciences.org/articles/104045" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="/assets/img/fig/ga-tert-elife2025.webp" alt="" loading="lazy" decoding="async"></a><div class="k"><span class="mono">eLife · 2025</span></div><h3><a href="https://elifesciences.org/articles/104045" target="_blank" rel="noopener">Telomeres control human telomerase (TERT) expression through non-telomeric TRF2</a></h3><p>Sengupta A, Vinayagamurthy S, Soni D, Deb R, Mukherjee AK, <b>Dutta S</b>, et al.</p><p class="feat-take">Telomere length feeds back on telomerase itself: TRF2 bound at the <i>TERT</i> promoter, away from telomeres, recruits PRC2 to repress <i>TERT</i>, and how much TRF2 binds there depends on telomere length.</p></article>
+      <article><a class="feat-fig" href="https://elifesciences.org/articles/95106" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="/assets/img/fig/fig-telomere-elife2024.webp" alt="" loading="lazy" decoding="async"></a><div class="k"><span class="mono">eLife · 2024</span><span class="badge badge-co-first">Co-first author</span></div><h3><a href="https://elifesciences.org/articles/95106" target="_blank" rel="noopener">Telomere length-sensitive regulation of IL1R1 by the shelterin protein TRF2 modulates immune signalling in the tumour microenvironment</a></h3><p>Mukherjee AK*, <b>Dutta S*</b>, Singh A, Sharma S, Roy SS, Sengupta A, et al.</p><p class="feat-take">Short telomeres increase TRF2 binding at the <i>IL1R1</i> promoter, which recruits p300 and switches on IL-1 receptor signalling; in triple-negative breast cancer this tracks with macrophage infiltration.</p></article><!-- /build:featured --></div>
     <div class="section-foot"><a class="btn" href="/publications/">All publications</a></div>
   </div>
 </section>
 
-<section class="section" aria-labelledby="h-research">
+<section class="section" id="cell" aria-labelledby="h-research">
   <div class="wrap">
     <div class="section-head">
       <h2 id="h-research">Four questions, one cell</h2>
-      <p class="section-intro">My work runs on two tracks that keep meeting: experiments on telomere and mitochondrial biology in cancer cells, and computational analyses of public genomic, imaging and clinical data at pan-cancer scale.</p>
+      <p class="section-intro">Each thread of my work sits in a different part of the same migrating cancer cell. Pick a channel to see the question and the papers behind it.</p>
     </div>
-    <div class="themes">
-      <article class="theme lead">
-        <h3><small>Telomeres and immunity</small>How telomere length talks to the tumour microenvironment</h3>
-        <p>Non-telomeric TRF2 binding controls IL1R1 and TERT in a telomere-length-sensitive way, linking telomere state to NF-κB signalling and immune infiltration.</p>
-        <p class="more"><a href="/research/#telomere">About this project</a></p>
-      </article>
-      <article class="theme">
-        <h3><small>Mitochondria in migration</small>The Mitochondria–Actin–Translation Hub</h3>
-        <p>Mitochondria positioned at the front of migrating cancer cells mark a mitochondria-associated translational hotspot, a site of local protein synthesis at the leading edge.</p>
-        <p class="more"><a href="/research/#mitochondria">About this project</a></p>
-      </article>
-      <article class="theme">
-        <h3><small>Quantitative imaging</small>From actin images to nematic fields</h3>
-        <p>TV-L1 optical flow, orientational order and topological defect analysis applied to live-cell and super-resolution data, with deep-learning pipelines for microscopy.</p>
-        <p class="more"><a href="/research/#imaging">About this project</a></p>
-      </article>
-      <article class="theme">
-        <h3><small>Pan-cancer computation</small>Regulatory, spatial and immune structure in public data</h3>
-        <p>Sole-author analyses integrating TCGA, DepMap, CPTAC, ENCODE and spatial transcriptomics to find structure that single studies miss.</p>
-        <p class="more"><a href="/research/#pancancer">About this project</a></p>
-      </article>
+    <div class="explorer" id="explorer" data-active="telo">
+      <div class="ex-stage">
+        <svg class="ex-svg" viewBox="0 0 640 400" role="img" aria-labelledby="ex-title" focusable="false">
+          <title id="ex-title">Schematic of a migrating cancer cell: telomeres in the nucleus, mitochondria with ribosomes behind a branched actin network at the leading edge, and immune cells nearby</title>
+          <path class="mem" d="M 70 215 C 60 160 120 125 205 122 C 290 119 360 92 450 78 C 530 66 598 112 604 196 C 610 282 548 338 456 330 C 372 322 300 300 215 304 C 130 308 80 268 70 215 Z"/>
+          <g class="ch ch-niche" data-ch="niche"><circle cx="116" cy="352" r="20" class="imm"/><circle cx="118" cy="351" r="9.6" class="imm-n"/><path d="M135.1 357.9L138.9 359.1M128 368L130.4 371.2M116.3 372L116.3 376M104.5 368.3L102.2 371.6M97.1 358.4L93.3 359.7M96.9 346.1L93.1 344.9M104 336L101.6 332.8M115.7 332L115.7 328M127.5 335.7L129.8 332.4M134.9 345.6L138.7 344.3" class="imm-v"/><circle cx="612" cy="352" r="18" class="imm"/><circle cx="614" cy="351" r="8.6" class="imm-n"/><path d="M629.2 357.3L633 358.5M622.8 366.4L625.2 369.6M612.3 370L612.3 374M601.6 366.7L599.3 370M595 357.8L591.2 359.1M594.8 346.7L591 345.5M601.2 337.6L598.8 334.4M611.7 334L611.7 330M622.4 337.3L624.7 334M629 346.2L632.8 344.9" class="imm-v"/><circle cx="44" cy="108" r="17" class="imm"/><circle cx="46" cy="107" r="8.2" class="imm-n"/><path d="M60.2 113L64.1 114.2M54.2 121.6L56.6 124.8M44.2 125L44.3 129M34.2 121.9L31.9 125.2M27.9 113.5L24.1 114.8M27.8 103L23.9 101.8M33.8 94.4L31.4 91.2M43.8 91L43.7 87M53.8 94.1L56.1 90.8M60.1 102.5L63.9 101.2" class="imm-v"/><circle cx="306" cy="370" r="16" class="imm"/><circle cx="308" cy="369" r="7.7" class="imm-n"/><path d="M321.3 374.7L325.1 375.9M315.6 382.8L318 386M306.2 386L306.3 390M296.8 383.1L294.5 386.3M290.9 375.2L287.1 376.4M290.7 365.3L286.9 364.1M296.4 357.2L294 354M305.8 354L305.7 350M315.2 356.9L317.5 353.7M321.1 364.8L324.9 363.6" class="imm-v"/><text x="632" y="394" class="ex-lab" text-anchor="end">immune neighbours</text></g>
+          <g class="ch ch-telo" data-ch="telo"><ellipse cx="215" cy="212" rx="82" ry="60" class="nuc"/><path d="M168 190Q185 175 205 186M222 172Q240 182 252 168M160 222Q178 236 196 226M210 205Q232 214 248 202M188 248Q208 238 230 252M248 236Q266 226 274 242" class="chrom"/><circle cx="168" cy="190" r="6.5" class="telo-glow"/><circle cx="168" cy="190" r="3.2" class="telo"/><circle cx="205" cy="186" r="6.5" class="telo-glow"/><circle cx="205" cy="186" r="3.2" class="telo"/><circle cx="222" cy="172" r="6.5" class="telo-glow"/><circle cx="222" cy="172" r="3.2" class="telo"/><circle cx="252" cy="168" r="6.5" class="telo-glow"/><circle cx="252" cy="168" r="3.2" class="telo"/><circle cx="160" cy="222" r="6.5" class="telo-glow"/><circle cx="160" cy="222" r="3.2" class="telo"/><circle cx="196" cy="226" r="6.5" class="telo-glow"/><circle cx="196" cy="226" r="3.2" class="telo"/><circle cx="210" cy="205" r="6.5" class="telo-glow"/><circle cx="210" cy="205" r="3.2" class="telo"/><circle cx="248" cy="202" r="6.5" class="telo-glow"/><circle cx="248" cy="202" r="3.2" class="telo"/><circle cx="188" cy="248" r="6.5" class="telo-glow"/><circle cx="188" cy="248" r="3.2" class="telo"/><circle cx="230" cy="252" r="6.5" class="telo-glow"/><circle cx="230" cy="252" r="3.2" class="telo"/><circle cx="248" cy="236" r="6.5" class="telo-glow"/><circle cx="248" cy="236" r="3.2" class="telo"/><circle cx="274" cy="242" r="6.5" class="telo-glow"/><circle cx="274" cy="242" r="3.2" class="telo"/><text x="215" y="296" class="ex-lab" text-anchor="middle">telomeres</text></g>
+          <g class="ch ch-mito" data-ch="mito"><path d="M333.7 170.3L368 163A5.5 5.5 0 0 1 370.3 173.7L336 181A5.5 5.5 0 0 1 333.7 170.3ZM372.2 220.4L413 224.7A5.5 5.5 0 0 1 411.8 235.6L371 231.3A5.5 5.5 0 0 1 372.2 220.4ZM402.5 148.3L429.4 137.5A5.5 5.5 0 0 1 433.5 147.7L406.6 158.5A5.5 5.5 0 0 1 402.5 148.3ZM427.7 258.2L459.4 267.3A5.5 5.5 0 0 1 456.3 277.8L424.6 268.7A5.5 5.5 0 0 1 427.7 258.2ZM454.3 191L481.3 190A5.5 5.5 0 0 1 481.7 201L454.7 202A5.5 5.5 0 0 1 454.3 191ZM314.6 244.4L339.3 248.8A5.5 5.5 0 0 1 337.4 259.6L312.7 255.2A5.5 5.5 0 0 1 314.6 244.4ZM489.8 227.9L508.6 225.2A5.5 5.5 0 0 1 510.2 236.1L491.4 238.8A5.5 5.5 0 0 1 489.8 227.9ZM369 111.6L385.8 102.7A5.5 5.5 0 0 1 391 112.4L374.2 121.3A5.5 5.5 0 0 1 369 111.6Z" class="mito"/><path d="M341 170.8L342.5 177.6M347.8 169.3L349.3 176.2M354.7 167.8L356.2 174.7M361.5 166.4L363 173.2M380.1 223.2L379.4 230.2M388.3 224.1L387.6 231.1M396.4 224.9L395.7 231.9M404.6 225.8L403.9 232.8M410 147.5L412.6 154M416.7 144.8L419.3 151.2M423.4 142L426 148.5M433.4 261.9L431.5 268.6M439.8 263.7L437.9 270.5M446.1 265.5L444.2 272.3M452.5 267.4L450.6 274.1M461.1 192.7L461.4 199.7M467.9 192.5L468.1 199.5M474.6 192.3L474.9 199.3M320.5 247.5L319.2 254.4M326.6 248.6L325.4 255.4M332.8 249.6L331.5 256.5M496.4 229L497.4 235.9M502.6 228.1L503.6 235M375.6 110.4L378.8 116.6M381.2 107.4L384.4 113.6" class="cristae"/><circle cx="372.3" cy="216.9" r="2" class="ribo"/><circle cx="380.7" cy="235.9" r="2" class="ribo"/><circle cx="392.9" cy="219" r="2" class="ribo"/><circle cx="401.4" cy="238" r="2" class="ribo"/><circle cx="413.6" cy="221.2" r="2" class="ribo"/><circle cx="399.8" cy="145.6" r="2" class="ribo"/><circle cx="414" cy="159.3" r="2" class="ribo"/><circle cx="414.6" cy="139.7" r="2" class="ribo"/><circle cx="428.8" cy="153.3" r="2" class="ribo"/><circle cx="429.5" cy="133.7" r="2" class="ribo"/><circle cx="427.6" cy="254.5" r="2" class="ribo"/><circle cx="431.1" cy="274.2" r="2" class="ribo"/><circle cx="444.5" cy="259.3" r="2" class="ribo"/><circle cx="448" cy="279.1" r="2" class="ribo"/><circle cx="461.4" cy="264.2" r="2" class="ribo"/><circle cx="452.5" cy="187.5" r="2" class="ribo"/><circle cx="460.7" cy="205.3" r="2" class="ribo"/><circle cx="467.7" cy="187" r="2" class="ribo"/><circle cx="475.9" cy="204.7" r="2" class="ribo"/><circle cx="482.9" cy="186.5" r="2" class="ribo"/><circle cx="486.9" cy="224.8" r="2" class="ribo"/><circle cx="495.3" cy="241.7" r="2" class="ribo"/><circle cx="498.7" cy="223.1" r="2" class="ribo"/><circle cx="507.2" cy="240.1" r="2" class="ribo"/><circle cx="510.6" cy="221.4" r="2" class="ribo"/><circle cx="365.2" cy="109.7" r="2" class="ribo"/><circle cx="378.9" cy="122.8" r="2" class="ribo"/><circle cx="375.8" cy="104.1" r="2" class="ribo"/><circle cx="389.5" cy="117.1" r="2" class="ribo"/><circle cx="386.4" cy="98.4" r="2" class="ribo"/><text x="418" y="358" class="ex-lab" text-anchor="middle">mitochondria + ribosomes</text></g>
+          <g class="ch ch-actin" data-ch="actin"><path d="M486 134L525.6 114.9M503.8 125.4L523.4 144.4M512.6 133.9L527.9 126.6M518.5 139.7L533.7 132.3M515.7 119.6L535.3 138.7M524.5 128.2L539.7 120.9M530.4 133.9L545.6 126.6M498 198L548 197M520.5 197.6L531.7 226.5M525.5 210.6L544.7 210.2M528.9 219.2L548.1 218.9M535.5 197.3L545.5 167.9M540 184L559.2 183.7M543 175.2L562.2 174.9M494 262L536 275M512.9 267.9L529.4 246.1M520.3 258.1L536.5 263.1M525.3 251.6L541.4 256.6M525.5 271.8L542 250M532.9 262L549.1 267M537.9 255.5L554.1 260.5M515 170L558.3 162.1M534.5 166.5L548.2 190M540.7 177.1L557.3 174M544.8 184.1L561.4 181.1M547.5 164.1L561.2 187.6M553.7 174.7L570.3 171.7M557.8 181.8L574.4 178.7M515 228L558.7 233.3M534.7 230.4L540.9 256.9M537.4 242.3L554.2 244.4M539.3 250.3L556.1 252.3M547.8 232L560.1 207.6M553.3 221L570.1 223M557 213.7L573.8 215.7M492 118L531.2 94M509.6 107.2L532 124.9M519.7 115.2L534.8 105.9M526.4 120.5L541.5 111.2M521.4 100L543.7 117.7M531.5 108L542 101.5M538.2 113.3L551.7 105M500 150L548.8 132.2M522 142L542.7 166.7M531.3 153.1L550.1 146.2M537.5 160.5L556.3 153.6M536.6 136.6L557.4 161.3M546 147.7L564.7 140.9M552.2 155.1L571 148.3M505 182L560.6 175.3M530 179L545.7 210M537.1 192.9L558.5 190.3M541.8 202.2L563.2 199.6M546.7 177L554.6 143.2M550.2 161.8L571.6 159.2M552.6 151.6L574 149M500 214L557.9 216.9M526.1 215.3L536.7 249.7M530.8 230.8L553.1 231.9M534 241.1L556.3 242.2M543.4 216.2L557.4 183M549.7 201.3L572 202.4M553.9 191.3L576.2 192.4M503 246L555.7 257.8M526.7 251.3L544.8 223.1M534.8 238.6L555.1 243.1M540.2 230.2L560.5 234.7M542.5 254.8L560.6 226.6M550.6 242.1L570.9 246.7M556.1 233.7L576.3 238.2M496 278L538 296.8M514.9 286.4L534.7 265.9M523.8 277.2L540 284.4M529.8 271.1L545.9 278.3M527.5 292.1L547.3 271.6M536.4 282.8L552.6 290.1M542.4 276.7L558.5 283.9M472 300L505 322.6M486.9 310.2L507 295.7M495.9 303.7L508.6 312.3M502 299.3L514.7 308M496.8 316.9L516.9 302.5M505.8 310.4L517.3 318.3M511.9 306.1L524.6 314.8M470 100L491.4 82M479.6 91.9L501.1 104.2M489.3 97.4L501.1 87.5M495.8 101.2L507.5 91.2M486.1 86.5L507.6 98.8M495.7 92L506.3 83.1M502.2 95.7L510.4 88.8M528 132L566.8 122.1M545.4 127.5L559.4 148M551.7 136.8L566.6 133M555.9 142.9L570.8 139.1M557.1 124.6L571.1 145.1M563.4 133.8L575.3 130.8M567.6 139.9L578 137.3M530 262L568.2 273.8M547.2 267.3L562.2 247.6M553.9 258.4L568.6 263M558.4 252.5L573.1 257M558.7 270.9L573.7 251.1M565.4 262L580.1 266.5M569.9 256L584.6 260.6" class="actin"/><text x="604" y="60" class="ex-lab" text-anchor="end">branched actin · leading edge →</text></g>
+        </svg>
+        <div class="ex-channels" role="tablist" aria-label="Research threads">
+          <button type="button" role="tab" id="tab-telo" aria-controls="ex-telo" aria-selected="true" data-ch="telo"><i class="ch-dot ch-dot-telo" aria-hidden="true"></i><span class="mono">Ch1</span> Telomeres</button>
+          <button type="button" role="tab" id="tab-mito" aria-controls="ex-mito" aria-selected="false" tabindex="-1" data-ch="mito"><i class="ch-dot ch-dot-mito" aria-hidden="true"></i><span class="mono">Ch2</span> Mitochondria</button>
+          <button type="button" role="tab" id="tab-actin" aria-controls="ex-actin" aria-selected="false" tabindex="-1" data-ch="actin"><i class="ch-dot ch-dot-actin" aria-hidden="true"></i><span class="mono">Ch3</span> Actin</button>
+          <button type="button" role="tab" id="tab-niche" aria-controls="ex-niche" aria-selected="false" tabindex="-1" data-ch="niche"><i class="ch-dot ch-dot-niche" aria-hidden="true"></i><span class="mono">Ch4</span> Neighbourhood</button>
+        </div>
+      </div>
+      <div class="ex-cards">
+        <article class="ex-card" id="ex-telo" role="tabpanel" aria-labelledby="tab-telo" data-ch="telo">
+          <p class="ex-k"><span class="mono">Ch1</span> Telomeres and immunity</p>
+          <h3>How telomere length talks to the tumour microenvironment</h3>
+          <p>Non-telomeric TRF2 binding controls <i>IL1R1</i> and <i>TERT</i> in a telomere-length-sensitive way, linking telomere state to NF-κB signalling and immune infiltration. I now follow telomere and senescence programmes across tumours and ageing immune cells.</p>
+          <ul class="ex-papers">
+            <li>Co-first author, <i>eLife</i> 2024</li>
+            <li><i>eLife</i> 2025</li>
+            <li>Sole author, <i>Frontiers in Aging</i> 2026 (accepted)</li>
+            <li>Sole author, bioRxiv 2026</li>
+          </ul>
+          <p class="more"><a href="/research/#telomere">About this thread</a></p>
+        </article>
+        <article class="ex-card" id="ex-mito" role="tabpanel" aria-labelledby="tab-mito" data-ch="mito" hidden>
+          <p class="ex-k"><span class="mono">Ch2</span> Mitochondria in migration</p>
+          <h3>The Mitochondria–Actin–Translation Hub</h3>
+          <p>Mitochondria positioned at the front of migrating cancer cells mark a mitochondria-associated translational hotspot, a site of local protein synthesis at the leading edge.</p>
+          <ul class="ex-papers">
+            <li>PhD thesis, Universität Hamburg, 2026</li>
+            <li>Minisymposium talk, ASCB|EMBO Cell Bio 2025</li>
+            <li><i>Frontiers in Pharmacology</i> 2026 (review)</li>
+          </ul>
+          <p class="more"><a href="/research/#mitochondria">About this thread</a></p>
+        </article>
+        <article class="ex-card" id="ex-actin" role="tabpanel" aria-labelledby="tab-actin" data-ch="actin" hidden>
+          <p class="ex-k"><span class="mono">Ch3</span> Quantitative imaging</p>
+          <h3>From actin images to nematic fields</h3>
+          <p>TV-L1 optical flow, orientational order and topological-defect analysis on live-cell and super-resolution data, with deep-learning pipelines for microscopy.</p>
+          <ul class="ex-papers">
+            <li>Sole author, bioRxiv 2026: temporal order in 48,134 cell tracks</li>
+            <li><i>Frontiers in Cell and Developmental Biology</i> 2026</li>
+          </ul>
+          <p class="more"><a href="/research/#imaging">About this thread</a></p>
+        </article>
+        <article class="ex-card" id="ex-niche" role="tabpanel" aria-labelledby="tab-niche" data-ch="niche" hidden>
+          <p class="ex-k"><span class="mono">Ch4</span> Pan-cancer computation</p>
+          <h3>Regulatory, spatial and immune structure in public data</h3>
+          <p>Sole-author analyses integrating TCGA, DepMap, CPTAC, ENCODE and spatial transcriptomics to find structure that single studies miss, from immune-cold neighbourhoods to cancer risk variants.</p>
+          <ul class="ex-papers">
+            <li>Sole author, <i>Frontiers in Systems Biology</i> 2026</li>
+            <li>Sole author, bioRxiv 2026: CIN-like fields and immune-cold neighbourhoods</li>
+            <li>Sole author, medRxiv 2026: 6,983 cancer GWAS variants</li>
+          </ul>
+          <p class="more"><a href="/research/#pancancer">About this thread</a></p>
+        </article>
+      </div>
     </div>
   </div>
 </section>
@@ -322,15 +358,15 @@
   <div class="wrap">
     <div class="section-head">
       <h2 id="h-approach">How my work is different</h2>
-      <p class="section-intro">Most projects sit either at the bench or at the computer. I work across both: the same question moves from experiment to image to model, back to the bench for perturbation, and on to validation in patient material. In parallel, I use large public datasets in two ways, to test a specific hypothesis at scale and to let the data suggest new ones.</p>
+      <p class="section-intro">I work at the bench and at scale, and one question runs through both. It moves from mechanism to image to model, is tested across thousands of tumours, and is checked in independent cohorts before I call it a finding. Public data serves two ways: to test a specific hypothesis at scale, and to let the data suggest new ones.</p>
     </div>
 
     <h3 class="approach-sub">One question, the whole loop</h3>
-    <ol class="loop" aria-label="Research loop from wet lab to validation">
+    <ol class="loop" aria-label="Research loop from mechanism to validation">
       <li class="loop-step">
         <span class="loop-n" aria-hidden="true">1</span>
-        <h4>Wet lab</h4>
-        <p>Molecular and cell biology: CRISPR editing, ChIP, reporter assays, tumour organoids and xenografts.</p>
+        <h4>Mechanism</h4>
+        <p>Molecular and cell biology at the bench: CRISPR editing, ChIP, reporter assays, tumour organoids and xenografts.</p>
         <p class="loop-ex">TRF2 binding at the <i>IL1R1</i> promoter, eLife 2024</p>
       </li>
       <li class="loop-step">
@@ -341,24 +377,24 @@
       </li>
       <li class="loop-step">
         <span class="loop-n" aria-hidden="true">3</span>
-        <h4>Dry lab</h4>
-        <p>Quantitative models of what the images and sequencing show: optical flow, nematic order, statistics and machine learning.</p>
+        <h4>Models</h4>
+        <p>Quantitative models of what images and sequencing show: optical flow, nematic order, statistics and machine learning.</p>
         <p class="loop-ex">Temporal order in 48,134 cell tracks, bioRxiv 2026</p>
       </li>
       <li class="loop-step">
         <span class="loop-n" aria-hidden="true">4</span>
-        <h4>Perturbation</h4>
-        <p>Change one variable and watch the system respond: gene knockdown and overexpression, telomere elongation and shortening, drugs.</p>
-        <p class="loop-ex">Engineered telomere length tunes <i>TERT</i>, eLife 2025</p>
+        <h4>Scale</h4>
+        <p>Test the idea across thousands of tumours and cells in TCGA, PCAWG, DepMap, CPTAC and spatial atlases.</p>
+        <p class="loop-ex">Patient-specific telomere length in TCGA and PCAWG, bioRxiv 2026</p>
       </li>
       <li class="loop-step">
         <span class="loop-n" aria-hidden="true">5</span>
         <h4>Validation</h4>
-        <p>Test the result in patient tissue, independent cohorts and an orthogonal assay before calling it a finding.</p>
+        <p>Independent cohorts, orthogonal readouts and targeted experiments before calling it a finding.</p>
         <p class="loop-ex">Over 90 triple-negative breast tumours, eLife 2024</p>
       </li>
     </ol>
-    <p class="loop-back"><span aria-hidden="true">↺</span> Each answer becomes the next question at the bench.</p>
+    <p class="loop-back"><span aria-hidden="true">↺</span> Each answer becomes the next, sharper question.</p>
 
     <h3 class="approach-sub">Public data at scale, used two ways</h3>
     <div class="data-modes">
@@ -377,7 +413,6 @@
         </ul>
       </article>
     </div>
-    <p class="loop-back"><span aria-hidden="true">⇄</span> Patterns found in public data become hypotheses to perturb at the bench; bench findings are checked against public cohorts.</p>
   </div>
 </section>
 
@@ -385,29 +420,32 @@
   <div class="wrap">
     <div class="section-head">
       <h2 id="h-path">Academic journey</h2>
-      <p class="section-intro">Where I have trained and worked, from my first degree to now, most recent first.</p>
+      <p class="section-intro">Where I have trained and worked, most recent first. The full record is on the <a href="/cv/">CV page</a>.</p>
     </div>
-    <ol class="rows">
-      <li class="row"><div class="row-when">2023 – present</div><div><div class="row-title">Researcher</div><div class="row-where">University Medical Center Hamburg-Eppendorf (UKE), University of Hamburg</div><p class="row-what">Research on cytoskeletal dynamics, organelle coordination and local translation in cancer cell migration. Teaching in UKE degree programmes (2026); supervised master's and PhD students in live-cell imaging, image analysis and cloning.</p></div></li>
+    <ol class="rows"><!-- build:journey --><li class="row"><div class="row-when">2023 – present</div><div><div class="row-title">Researcher</div><div class="row-where">University Medical Center Hamburg-Eppendorf (UKE), University of Hamburg</div><p class="row-what">Research on cytoskeletal dynamics, organelle coordination and local translation in cancer cell migration. Teaching in UKE degree programmes (2026); supervised master's and PhD students in live-cell imaging, image analysis and cloning.</p></div></li>
       <li class="row"><div class="row-when">2020 – 2023</div><div><div class="row-title">Senior research fellow</div><div class="row-where">CSIR Institute of Genomics and Integrative Biology, New Delhi</div><p class="row-what">Telomere–immune crosstalk in the tumour microenvironment, TRF2-mediated IL1R1 regulation, TERT gene regulation, T cell ageing, machine learning for telomere length prediction from gene expression.</p></div></li>
       <li class="row"><div class="row-when">2020</div><div><div class="row-title">Junior research fellow</div><div class="row-where">Indian Institute of Technology Jodhpur</div><p class="row-what">Single-molecule opto-genomics for immune checkpoint blockade; single-molecule imaging of T-cell receptor serial engagement.</p></div></li>
       <li class="row"><div class="row-when">2019</div><div><div class="row-title">Visiting researcher</div><div class="row-where">University of Helsinki</div><p class="row-what">Lineage-specific transcription factors in liver cancer, trans-differentiation, next-generation sequencing analysis.</p></div></li>
       <li class="row"><div class="row-when">2018 – 2019</div><div><div class="row-title">Junior research fellow</div><div class="row-where">National Institute of Science Education and Research, Bhubaneswar</div><p class="row-what">Genetic alterations in gall bladder cancer; graph-based network analysis of tumour angiogenesis.</p></div></li>
       <li class="row"><div class="row-when">2016 – 2018</div><div><div class="row-title">MSc Biotechnology</div><div class="row-where">Banaras Hindu University, Varanasi</div><p class="row-what">First division, CGPA 8.34/10. DBT Merit Scholarship.</p></div></li>
-      <li class="row"><div class="row-when">2013 – 2016</div><div><div class="row-title">BSc (Hons) Botany</div><div class="row-where">University of Burdwan, West Bengal</div></div></li>
-    </ol>
+      <li class="row"><div class="row-when">2013 – 2016</div><div><div class="row-title">BSc (Hons) Botany</div><div class="row-where">University of Burdwan, West Bengal</div></div></li><!-- /build:journey --></ol>
   </div>
 </section>
 </main>
+<!-- build:footer -->
 <footer>
   <div class="wrap">
-    <span>© 2026 Subhajit Dutta · <span data-pos="city">Hamburg</span> · <span class="upd">Updated <time data-updated datetime="2026-10-20">October 2026</time></span></span>
+    <span>© 2026 Subhajit Dutta · Hamburg · <span class="upd">Updated <time datetime="2026-11-10">November 2026</time></span></span>
     <span class="links">
+      <a href="/media/">Press kit</a>
+      <a href="/news/">News</a>
+      <a href="/feed.xml" type="application/rss+xml">RSS</a>
       <a href="https://orcid.org/0000-0003-2390-7492" rel="me noopener" target="_blank">ORCID</a>
       <a href="/collaborate/">Contact</a>
       <a href="/legal/">Legal and privacy</a>
     </span>
   </div>
 </footer>
+<!-- /build:footer -->
 </body>
 </html>

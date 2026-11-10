@@ -5,18 +5,19 @@ window.SITE = window.SITE || {};
 window.SITE.profile = {
   name: "Subhajit Dutta",
 
-  // Date of the last content update (YYYY-MM-DD), shown in every footer. Change it whenever you edit the site.
-  updated: "2026-10-20",
+  // Date of the last content update. Leave empty: the build stamps today's date into every footer.
+  updated: "",
   email: "dsubhajit.edu@gmail.com",
   orcid: "0000-0003-2390-7492",
 
-  // Current position. When you change job, edit these lines: the home-page "Now" strip,
-  // profile card, footers, Collaborate and Legal pages update from here. Also update the
-  // "affiliation" block near the top of index.html and "home" in assets/data/network.js.
+  // Current position. The home-page "Now" strip, profile card and footers update from here.
+  // "org" is deliberately empty for now (no institute named on the site); when you are ready to
+  // announce the move, set org to e.g. "IFOM, Milan" and city/country to Milan/Italy, then run the build.
   position: {
     role: "Researcher",
-    org: "Institute of Biochemistry and Molecular Cell Biology, UKE Hamburg",
-    orgFull: "Institute of Biochemistry and Molecular Cell Biology (IBMZ), Center for Experimental Medicine, UKE, Hamburg",
+    headline: "Researcher in cancer biology and computation",
+    org: "",
+    orgFull: "",
     city: "Hamburg",
     country: "Germany"
   },

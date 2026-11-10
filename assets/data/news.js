@@ -7,6 +7,7 @@
    ============================================================ */
 window.SITE = window.SITE || {};
 window.SITE.news = [
+  {date:"2026-11-03", text:"Sole-author paper accepted in <i>Frontiers in Aging</i>: transcriptional signatures of senescence and telomere biology across immune cell types during human ageing."},
   {date:"2026-10-27", text:"Review with Namrata Maity (Ariel University) published in <i>Frontiers in Pharmacology</i>: the mitochondrion as a mechanometabolic conductor of cancer metastasis, with pharmacological insights from the mitochondria–peroxisome interface.", url:"https://doi.org/10.3389/fphar.2026.1983363"},
   {date:"2026-10-01", text:"Our review on the mitochondria–peroxisome interface in cancer metastasis (with Namrata Maity) has been accepted in <i>Frontiers in Pharmacology</i>.", url:"https://www.frontiersin.org/journals/pharmacology/articles/10.3389/fphar.2026.1983363/full"},
   {date:"2026-09-09", text:"Published in <i>Frontiers in Systems Biology</i>: covariate-adjusted AP-1 motif architecture and footprinting track olaparib-adaptive chromatin remodelling.", url:"https://doi.org/10.3389/fsysb.2026.1859256"},
