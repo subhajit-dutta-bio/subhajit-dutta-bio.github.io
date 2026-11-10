@@ -12,6 +12,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
+import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -244,6 +245,9 @@ function fill(html, name, content, file) {
   return html.replace(re, (_, a, b) => `${a}${content}${b}`);
 }
 
+const versions = {};
+const assetVersion = p => versions[p] ??= crypto.createHash("sha256").update(fs.readFileSync(path.join(ROOT, p.slice(1)))).digest("hex").slice(0, 10);
+
 const changed = [];
 function write(rel, content) {
   const abs = path.join(ROOT, rel);
@@ -260,6 +264,9 @@ for (const [file, cfg] of Object.entries(PAGES)) {
   html = fill(html, "headextra", "\n" + HEADEXTRA + "\n", file);
   for (const [name, fn] of Object.entries(cfg.blocks)) html = fill(html, name, fn(), file);
   html = html.replace(/("dateModified": ")[^"]*(")/, `$1${UPDATED}$2`);
+  // Cache-busting: every stylesheet and script link carries a hash of the file, so browsers fetch
+  // a fresh copy whenever the file changes (Cloudflare tells browsers to cache assets for hours).
+  html = html.replace(/(href|src)="(\/assets\/(?:site\.css|site\.js|data\/[\w-]+\.js))(?:\?v=[0-9a-f]+)?"/g, (_, attr, p) => `${attr}="${p}?v=${assetVersion(p)}"`);
   write(file, html);
 }
 
