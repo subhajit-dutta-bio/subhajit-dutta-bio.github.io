@@ -2,6 +2,7 @@
 # the payload and this workflow. Verifies every input by SHA-256 before changing anything.
 name: Apply redesign (one-off)
 on:
+  workflow_dispatch:
   push:
     branches: [main]
     paths: ['.github/redesign/payload.b64']
@@ -36,7 +37,9 @@ jobs:
       - name: Commit and push
         run: |
           set -euo pipefail
-          git rm -q .github/redesign/payload.b64 .github/workflows/apply-redesign.yml
+          # The built-in token may not create or delete workflow files, so leave them for a manual commit.
+          rm -f .github/workflows/check-build.yml
+          git rm -q .github/redesign/payload.b64
           git config user.name "Subhajit Dutta"
           git config user.email "subhajit-dutta-bio@users.noreply.github.com"
           git add -A
