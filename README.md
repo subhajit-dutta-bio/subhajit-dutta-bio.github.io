@@ -15,7 +15,9 @@ research figures and the home-page lists into the HTML as plain static markup, s
 everything without running JavaScript. It also shares one header and footer across every page, stamps
 the footer date, and writes `sitemap.xml` and `feed.xml` (RSS). It only rewrites what sits between
 `<!-- build:name -->` markers, so running it twice changes nothing. A GitHub Action
-(`.github/workflows/check-build.yml`) fails if you push data changes without rebuilding; it never deploys.
+(`.github/workflows/rebuild.yml`) also runs the build on every push that changes `assets/data/`, the
+stylesheet, the script or `tools/`, and commits the result, so you can edit data straight in the GitHub web editor.
+Stylesheet and script links carry a content hash (`?v=…`), so browsers never mix new pages with old styles.
 
 Navigation and footer links live in `tools/partials/`. Edit them there, not in each page.
 
