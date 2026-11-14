@@ -7,6 +7,8 @@
    ============================================================ */
 window.SITE = window.SITE || {};
 window.SITE.news = [
+  {date:"2026-11-11", text:"Granted six months of upgraded access to Google Antigravity, including the Gemini 4 Argon and Carbon models, through Google's programme supporting non-commercial scientific research with frontier AI."},
+  {date:"2026-11-04", text:"Published in <i>The Lancet Gastroenterology &amp; Hepatology</i>: the GBD 2023 analysis of the global burden of gallbladder and biliary diseases in 204 countries and territories, 1990–2023, to which I contributed as a GBD collaborator.", url:"https://doi.org/10.1016/S2468-1253(26)00259-1"},
   {date:"2026-11-03", text:"Sole-author paper accepted in <i>Frontiers in Aging</i>: transcriptional signatures of senescence and telomere biology across immune cell types during human ageing."},
   {date:"2026-10-27", text:"Review with Namrata Maity (Ariel University) published in <i>Frontiers in Pharmacology</i>: the mitochondrion as a mechanometabolic conductor of cancer metastasis, with pharmacological insights from the mitochondria–peroxisome interface.", url:"https://doi.org/10.3389/fphar.2026.1983363"},
   {date:"2026-10-01", text:"Our review on the mitochondria–peroxisome interface in cancer metastasis (with Namrata Maity) has been accepted in <i>Frontiers in Pharmacology</i>.", url:"https://www.frontiersin.org/journals/pharmacology/articles/10.3389/fphar.2026.1983363/full"},
