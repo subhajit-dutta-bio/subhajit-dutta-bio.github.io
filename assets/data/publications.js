@@ -46,7 +46,6 @@ window.SITE.pubs = [
   {type:"review", status:"in preparation", year:2026, title:"Mechanobiology of actin, mitochondria and metastasis", authors:"<b>Dutta S</b>, Sulava S, Banik A", note:"Invited review", tags:["math","imaging"]},
   {type:"review", status:"under review", year:2026, title:"Integrating histopathology with genomic data", authors:"<b>Dutta S</b>, Sulava S", note:"Invited book chapter", tags:["pancancer"]},
   {type:"review", status:"under review", year:2026, title:"Global, regional, and national burden of osteoarthritis in 204 countries and territories, 1990–2023", authors:"GBD 2023 Osteoarthritis Collaborators", note:"GBD consortium paper, revised version"},
-  {type:"review", status:"under review", year:2026, title:"Global, regional, and national burden of gallbladder and biliary diseases in 204 countries and territories, 1990–2023", authors:"GBD 2023 Gallbladder and Biliary Diseases Collaborators", note:"GBD consortium paper, revised version"},
 
   /* ---- Preprints ---- */
   {type:"preprint", status:"published", year:2026, title:"Temporal order separates generic persistence from cue-directed commitment in cell migration", authors:"<b>Dutta S</b>", venue:"bioRxiv", doi:"10.64898/2026.07.16.739021", note:"Revised version under peer review", featured:true, tags:["imaging"], take:"Comparing each cell track with the same steps reshuffled shows how much persistence comes from the order of movements, separating how much a cell moves from whether it stays committed to an external cue.", selected:true, fig:"/assets/img/fig/ga-migration-biorxiv2026.webp"},
@@ -65,6 +64,7 @@ window.SITE.pubs = [
   {type:"patent", status:"published", year:2024, title:"Recombinant construct for cancer treatment: targeted silencing of IL1R1 via a dCas9–TRF2 fusion protein", authors:"<b>Dutta S</b> (lead inventor), Chowdhury S, Mukherjee AK, Roy SS, et al.", venue:"US Patent Application US20240117359A1; Indian Patent Application IN202211019412", url:"https://patents.google.com/patent/US20240117359A1", note:"Patent application", tags:["telomere"], role:"inventor"},
 
   /* ---- GBD consortium ---- */
+  {type:"consortium", status:"published", year:2026, title:"Global, regional, and national burden of gallbladder and biliary diseases in 204 countries and territories, 1990–2023: a systematic analysis for the Global Burden of Disease Study 2023", authors:"GBD 2023 Gallbladder and Biliary Diseases Collaborators (incl. <b>Dutta S</b>)", venue:"The Lancet Gastroenterology & Hepatology", doi:"10.1016/S2468-1253(26)00259-1"},
   {type:"consortium", status:"published", year:2026, title:"Global, regional, and national burden of heart failure, 1990–2023: a systematic analysis for the Global Burden of Disease Study 2023", authors:"GBD 2023 Heart Failure Collaborators (incl. <b>Dutta S</b>)", venue:"JAMA Cardiology", doi:"10.1001/jamacardio.2026.4068"},
 ];
 
