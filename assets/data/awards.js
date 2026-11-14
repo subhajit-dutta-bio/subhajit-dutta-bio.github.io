@@ -20,6 +20,7 @@ window.SITE.awards = [
   {group:"prize", sort:"2022-11", when:"2022", title:"Best oral presentation", where:"49th Annual Conference of the Indian Immunology Society (Immunocon)", highlight:true},
 
   // Research and travel grants
+  {group:"grant", sort:"2026-11", when:"2026 – 2027", title:"Google Antigravity upgraded access for scientists", where:"Google", note:"Six months of top-tier access to Google Antigravity, including Gemini 4 Argon and Carbon, for non-commercial research."},
   {group:"grant", sort:"2026", when:"2026", title:"Google TPU Research Cloud award", note:"Compute for foundation-model development."},
   {group:"grant", sort:"2026-12", when:"2025 – 2026", title:"EMBO Travel Grants", where:"ASCB|EMBO Cell Bio 2025 and 2026"},
   {group:"grant", sort:"2026-07", when:"2025 – 2026", title:"EUGLOH travel grants (three awards)", where:"European University Alliance for Global Health", note:"EACR 2025 Congress and a collaborative visit to the University of Porto (2025); Annual Student Research Conference, University of Porto (2025); SYMGLOH Symposium, Université Paris-Saclay (2026)."},
