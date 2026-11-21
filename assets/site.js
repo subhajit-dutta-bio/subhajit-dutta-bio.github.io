@@ -44,10 +44,18 @@
     $$(".tabs a").forEach(a => { if (a.dataset.page === page) a.setAttribute("aria-current", "page"); });
     const cur = $(".tabs a[aria-current]"), ul = $(".tabs");
     if (cur && ul && ul.scrollWidth > ul.clientWidth) ul.scrollLeft = Math.max(0, cur.offsetLeft - (ul.clientWidth - cur.offsetWidth) / 2);
-    const nav = $(".nav"), btn = $("#menuBtn");
-    if (btn && nav) {
-      btn.addEventListener("click", () => { const open = nav.classList.toggle("open"); btn.setAttribute("aria-expanded", String(open)); });
-      document.addEventListener("click", e => { if (!nav.contains(e.target)) { nav.classList.remove("open"); btn.setAttribute("aria-expanded", "false"); } });
+    const navEl = $(".nav"), btn = $("#menuBtn");
+    if (btn && navEl) {
+      const setOpen = open => {
+        navEl.classList.toggle("open", open);
+        btn.setAttribute("aria-expanded", String(open));
+        btn.setAttribute("aria-label", open ? "Close navigation menu" : "Open navigation menu");
+      };
+      btn.addEventListener("click", () => setOpen(!navEl.classList.contains("open")));
+      document.addEventListener("click", e => { if (navEl.classList.contains("open") && !navEl.contains(e.target)) setOpen(false); });
+      document.addEventListener("keydown", e => { if (e.key === "Escape" && navEl.classList.contains("open")) { setOpen(false); btn.focus(); } });
+      $$(".nav-drawer a", navEl).forEach(a => a.addEventListener("click", () => setOpen(false)));
+      addEventListener("resize", () => { if (innerWidth >= 760 && navEl.classList.contains("open")) setOpen(false); });
     }
   })();
 
@@ -69,7 +77,7 @@
       if (a) { a.href = href; if (!a.textContent.trim() || a.dataset.fillHost) a.textContent = href.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, ""); }
     });
     // CV button
-    $$("[data-cv]").forEach(a => { if (P.cvPdf) a.href = P.cvPdf; else a.hidden = true; });
+    $$("[data-cv]").forEach(a => { if (P.cvPdf) { a.href = P.cvPdf; a.hidden = false; } else a.hidden = true; });
     // Email text + copy
     $$("[data-email]").forEach(n => { n.textContent = P.email || ""; });
     $$("[data-copy-email]").forEach(b => b.addEventListener("click", () => copyText(P.email, $("[data-email]"))));
@@ -224,21 +232,34 @@
     return lines.join("\n");
   }
   (function publications() {
-    // The list is rendered into the page by tools/build.mjs; this only adds filtering, search and BibTeX.
+    // The list and filter chips are rendered into the page by tools/build.mjs; this wires filtering, search and BibTeX.
     const list = $("#pubList"); if (!list) return;
     const filters = $("#pubFilters"), search = $("#pubSearch");
     const items = $$(".pub", list);
     const count = t => t === "all" ? items.length : t === "selected" ? items.filter(li => li.dataset.selected).length : items.filter(li => li.dataset.type === t).length;
     let type = "selected", q = "";
-    const hash = location.hash.replace("#", "");
-    if ((S.pubTypes || []).some(([k]) => k === hash)) type = hash;
-    if (hash === "in-progress") type = "all";
-    (S.pubTypes || []).forEach(([key, label]) => {
-      if (!count(key)) return;
-      const b = el("button", {type: "button", class: "chip", "data-type": key, "aria-pressed": String(key === type)}, `${label}<span class="n">${count(key)}</span>`);
-      b.addEventListener("click", () => { type = key; $$(".chip", filters).forEach(c => c.setAttribute("aria-pressed", String(c.dataset.type === key))); apply(); });
-      filters.appendChild(b);
-    });
+    const syncHash = () => {
+      const hash = location.hash.replace("#", "");
+      if ((S.pubTypes || []).some(([k]) => k === hash)) type = hash;
+      else if (hash === "in-progress") type = "all";
+    };
+    syncHash();
+    if (filters) {
+      if (!$$(".chip", filters).length) {
+        (S.pubTypes || []).forEach(([key, label]) => {
+          if (!count(key)) return;
+          filters.appendChild(el("button", {type: "button", class: "chip", "data-type": key, "aria-pressed": String(key === type)}, `${label}<span class="n">${count(key)}</span>`));
+        });
+      }
+      $$(".chip", filters).forEach(b => {
+        b.setAttribute("aria-pressed", String(b.dataset.type === type));
+        b.addEventListener("click", () => {
+          type = b.dataset.type;
+          $$(".chip", filters).forEach(c => c.setAttribute("aria-pressed", String(c.dataset.type === type)));
+          apply();
+        });
+      });
+    }
     items.forEach(li => { const p = ALLPUBS[Number(li.dataset.i)]; const b = $("[data-bib]", li); if (p && b) b.addEventListener("click", () => copyText(bibtex(p))); });
     const empty = $(".pub-empty", list);
     if (search) search.addEventListener("input", () => { q = search.value.trim().toLowerCase(); if (q && type === "selected") { type = "all"; $$(".chip", filters).forEach(c => c.setAttribute("aria-pressed", String(c.dataset.type === "all"))); } apply(); });
@@ -251,69 +272,123 @@
     apply();
     const pend = $("#pubPending");
     if (pend && location.hash === "#in-progress") pend.open = true;
+    addEventListener("hashchange", () => {
+      syncHash();
+      if (filters) $$(".chip", filters).forEach(c => c.setAttribute("aria-pressed", String(c.dataset.type === type)));
+      if (pend && location.hash === "#in-progress") pend.open = true;
+      apply();
+    });
   })();
 
   /* ---------- Talks (rendered by the build; filters and photo viewer here) ---------- */
   (function talks() {
     const host = $("#talksList"); if (!host) return;
     const filters = $("#talkFilters"), rows = $$(".row", host);
-    $$("[data-photo]", host).forEach(b => b.addEventListener("click", () => openLightbox([{src: b.dataset.photo, caption: b.dataset.caption}], 0)));
+    $$("[data-photo]", host).forEach(b => b.addEventListener("click", () => openLightbox([{src: b.dataset.photo, caption: b.dataset.caption}], 0, b)));
     if (filters) {
       let kind = "all";
-      [["all", "All"], ["talk", "Talks"], ["poster", "Posters"]].forEach(([k, label]) => {
-        const n = k === "all" ? rows.length : rows.filter(r => r.dataset.kind === k).length;
-        const b = el("button", {type: "button", class: "chip", "data-kind": k, "aria-pressed": String(k === kind)}, `${label}<span class="n">${n}</span>`);
-        b.addEventListener("click", () => { kind = k; $$(".chip", filters).forEach(c => c.setAttribute("aria-pressed", String(c.dataset.kind === k))); rows.forEach(li => li.hidden = kind !== "all" && li.dataset.kind !== kind); });
-        filters.appendChild(b);
+      if (!$$(".chip", filters).length) {
+        [["all", "All"], ["talk", "Talks"], ["poster", "Posters"]].forEach(([k, label]) => {
+          const n = k === "all" ? rows.length : rows.filter(r => r.dataset.kind === k).length;
+          filters.appendChild(el("button", {type: "button", class: "chip", "data-kind": k, "aria-pressed": String(k === kind)}, `${label}<span class="n">${n}</span>`));
+        });
+      }
+      $$(".chip", filters).forEach(b => {
+        b.addEventListener("click", () => {
+          kind = b.dataset.kind;
+          $$(".chip", filters).forEach(c => c.setAttribute("aria-pressed", String(c.dataset.kind === kind)));
+          rows.forEach(li => li.hidden = kind !== "all" && li.dataset.kind !== kind);
+        });
       });
     }
   })();
 
-  /* ---------- Gentle reveal on scroll ---------- */
+  /* ---------- Gentle reveal on scroll (progressive, hash-safe) ---------- */
   (function reveal() {
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) return;
+    if (location.hash || matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) return;
     requestAnimationFrame(() => {
-      const targets = $$("main .section .wrap > *, .page-head .wrap > *").filter(n => n.getBoundingClientRect().top > innerHeight * 0.9);
+      const targets = $$("main .section .wrap > *").filter(n => n.getBoundingClientRect().top > innerHeight * 1.02);
       if (!targets.length) return;
       targets.forEach(n => n.classList.add("reveal"));
-      const io = new IntersectionObserver(en => en.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
+      const io = new IntersectionObserver(en => en.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px 80px 0px" });
       targets.forEach(n => io.observe(n));
     });
   })();
 
-  /* ---------- Media gallery + lightbox ---------- */
+  /* ---------- Media gallery + native <dialog> lightbox ---------- */
   const MEDIA = (S.media || []).slice();
-  let lb = null;
-  function openLightbox(items, index) {
-    const imgs = items.filter(i => (i.type || "image") === "image"); if (!imgs.length) return;
-    let i = Math.max(0, imgs.indexOf(items[index]));
-    if (!lb) {
-      lb = el("div", {class: "lightbox", role: "dialog", "aria-modal": "true", "aria-label": "Image viewer"});
-      lb.innerHTML = `<div class="lb-img"><img alt=""></div><div class="lb-bar"><p></p><div class="lb-nav"><button class="icon-btn" type="button" data-prev aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><button class="icon-btn" type="button" data-next aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button></div></div><button class="icon-btn lb-close" type="button" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>`;
-      document.body.appendChild(lb);
-      lb.addEventListener("click", e => { if (e.target === lb || e.target.closest(".lb-close") || e.target.classList.contains("lb-img")) close(); });
-      $("[data-prev]", lb).addEventListener("click", () => show(i - 1));
-      $("[data-next]", lb).addEventListener("click", () => show(i + 1));
-      document.addEventListener("keydown", e => { if (lb.hidden) return; if (e.key === "Escape") close(); if (e.key === "ArrowLeft") show(i - 1); if (e.key === "ArrowRight") show(i + 1); });
+  let lb = null, lbOpener = null, lbItems = [], lbIdx = 0;
+  function showLb(k) {
+    if (!lb || !lbItems.length) return;
+    lbIdx = (k + lbItems.length) % lbItems.length;
+    const cur = lbItems[lbIdx];
+    const im = $("img", lb);
+    im.src = cur.src;
+    im.alt = cur.caption || "";
+    const bp = $(".lb-bar p", lb);
+    bp.textContent = cur.caption || "";
+    if (cur.credit) {
+      const c = el("span", {class: "fig-credit"});
+      if (cur.link) {
+        const a = el("a", {href: cur.link, target: "_blank", rel: "noopener"});
+        a.textContent = cur.credit;
+        c.appendChild(a);
+      } else {
+        c.textContent = cur.credit;
+      }
+      bp.appendChild(c);
     }
-    function show(k) { i = (k + imgs.length) % imgs.length; const im = $("img", lb); im.src = imgs[i].src; im.alt = imgs[i].caption || ""; const bp = $(".lb-bar p", lb); bp.textContent = imgs[i].caption || ""; if (imgs[i].credit) { const c = el("span", {class: "fig-credit"}); if (imgs[i].link) { const a = el("a", {href: imgs[i].link, target: "_blank", rel: "noopener"}); a.textContent = imgs[i].credit; c.appendChild(a); } else c.textContent = imgs[i].credit; bp.appendChild(c); } $(".lb-nav", lb).hidden = imgs.length < 2; }
-    function close() { lb.hidden = true; document.body.style.overflow = ""; }
-    show(i); lb.hidden = false; document.body.style.overflow = "hidden"; $(".lb-close", lb).focus();
+    $(".lb-nav", lb).hidden = lbItems.length < 2;
+  }
+  function closeLightbox() {
+    if (!lb) return;
+    if (typeof lb.close === "function" && lb.open) lb.close();
+    else lb.hidden = true;
+    document.body.style.overflow = "";
+    if (lbOpener && typeof lbOpener.focus === "function") lbOpener.focus();
+    lbOpener = null;
+  }
+  function openLightbox(items, index, opener) {
+    const imgs = items.filter(i => (i.type || "image") === "image"); if (!imgs.length) return;
+    lbItems = imgs;
+    lbOpener = opener || document.activeElement;
+    const startIdx = Math.max(0, imgs.indexOf(items[index]));
+    if (!lb) {
+      lb = el("dialog", {class: "lightbox", "aria-label": "Figure viewer"});
+      lb.innerHTML = `<div class="lb-inner"><div class="lb-img"><img alt=""></div><div class="lb-bar"><p></p><div class="lb-nav"><button class="icon-btn" type="button" data-prev aria-label="Previous figure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><button class="icon-btn" type="button" data-next aria-label="Next figure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button></div></div><button class="icon-btn lb-close" type="button" aria-label="Close figure viewer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>`;
+      document.body.appendChild(lb);
+      lb.addEventListener("click", e => { if (e.target === lb || e.target.closest(".lb-close") || e.target.classList.contains("lb-img") || e.target.classList.contains("lb-inner")) closeLightbox(); });
+      lb.addEventListener("close", () => { document.body.style.overflow = ""; if (lbOpener && typeof lbOpener.focus === "function") { lbOpener.focus(); lbOpener = null; } });
+      $("[data-prev]", lb).addEventListener("click", () => showLb(lbIdx - 1));
+      $("[data-next]", lb).addEventListener("click", () => showLb(lbIdx + 1));
+      document.addEventListener("keydown", e => {
+        const isOpen = lb && (lb.open || !lb.hidden);
+        if (!isOpen) return;
+        if (e.key === "Escape") closeLightbox();
+        if (e.key === "ArrowLeft") showLb(lbIdx - 1);
+        if (e.key === "ArrowRight") showLb(lbIdx + 1);
+      });
+    }
+    showLb(startIdx);
+    document.body.style.overflow = "hidden";
+    if (typeof lb.showModal === "function") { lb.hidden = false; if (!lb.open) lb.showModal(); }
+    else lb.hidden = false;
+    $(".lb-close", lb).focus();
   }
   (function gallery() {
     const host = $("#gallery"); if (!host) return;
     const filters = $("#mediaFilters"), empty = $("#mediaEmpty");
     if (!MEDIA.length) { if (empty) empty.hidden = false; if (filters) filters.hidden = true; return; }
     const docIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>`;
-    MEDIA.forEach((m, idx) => {
+    let group = "all";
+    const visible = () => MEDIA.filter(m => group === "all" || (m.group || "figures") === group);
+    MEDIA.forEach(m => {
       const isDoc = (m.type || "image") !== "image";
       const fig = el("figure", {class: `tile${m.wide ? " wide" : ""}${isDoc ? " doc" : ""}`, "data-group": m.group || "figures", tabIndex: 0});
       if (isDoc) { fig.innerHTML = `<a href="${m.src}" target="_blank" rel="noopener" class="doc-link">${docIcon}<span>${esc(m.caption || "Document")}</span></a>`; }
-      else { fig.innerHTML = `<img src="${m.src}" alt="${esc(m.caption || "")}" loading="lazy"><figcaption>${esc(m.caption || "")}</figcaption>`; fig.addEventListener("click", () => openLightbox(visible(), visible().indexOf(m))); fig.addEventListener("keydown", e => { if (e.key === "Enter") fig.click(); }); }
+      else { fig.innerHTML = `<img src="${m.src}" alt="${esc(m.caption || "")}" loading="lazy"><figcaption>${esc(m.caption || "")}</figcaption>`; fig.addEventListener("click", () => openLightbox(visible(), visible().indexOf(m), fig)); fig.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fig.click(); } }); }
       host.appendChild(fig);
     });
-    let group = "all";
-    const visible = () => MEDIA.filter(m => group === "all" || (m.group || "figures") === group);
     if (filters) (S.mediaGroups || []).forEach(([k, label]) => {
       const n = k === "all" ? MEDIA.length : MEDIA.filter(m => (m.group || "figures") === k).length; if (!n) return;
       const b = el("button", {type: "button", class: "chip", "data-group": k, "aria-pressed": String(k === group)}, `${label}<span class="n">${n}</span>`);
@@ -322,19 +397,26 @@
     });
   })();
   (function figureZoom() {
-    $$("img[data-lightbox]").forEach(img => img.addEventListener("click", () => {
-      const fc = img.closest("figure") && $("figcaption", img.closest("figure"));
-      openLightbox([{src: img.getAttribute("src"), caption: img.alt}], 0);
-    }));
+    $$("img[data-lightbox]").forEach(img => {
+      img.tabIndex = 0;
+      img.setAttribute("role", "button");
+      const open = () => openLightbox([{src: img.getAttribute("src"), caption: img.alt, credit: img.dataset.credit || "", link: img.dataset.creditUrl || ""}], 0, img);
+      img.addEventListener("click", open);
+      img.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } });
+    });
+    $$("[data-zoom]").forEach(btn => {
+      btn.addEventListener("click", () => openLightbox([{src: btn.dataset.zoom, caption: btn.dataset.caption || "", credit: btn.dataset.credit || "", link: btn.dataset.creditUrl || ""}], 0, btn));
+    });
   })();
 
   /* ---------- One-cell explorer (home) ---------- */
   (function explorer() {
     const ex = $("#explorer"); if (!ex) return;
-    const tabs = $$("[role=tab]", ex), cards = $$(".ex-card", ex);
-    function set(ch, focus) {
+    const tabs = $$("[role=tab]", ex), cards = $$(".ex-card", ex), groups = $$(".ch", ex);
+    function set(ch, focusTab) {
       ex.dataset.active = ch;
-      tabs.forEach(t => { const on = t.dataset.ch === ch; t.setAttribute("aria-selected", String(on)); t.tabIndex = on ? 0 : -1; if (on && focus) t.focus(); });
+      tabs.forEach(t => { const on = t.dataset.ch === ch; t.setAttribute("aria-selected", String(on)); t.tabIndex = on ? 0 : -1; if (on && focusTab) t.focus(); });
+      groups.forEach(g => g.setAttribute("aria-pressed", String(g.dataset.ch === ch)));
       cards.forEach(c => { c.hidden = c.dataset.ch !== ch; });
     }
     tabs.forEach((t, i) => {
@@ -344,9 +426,10 @@
         e.preventDefault(); set(tabs[(i + k + tabs.length) % tabs.length].dataset.ch, true);
       });
     });
-    $$(".ch", ex).forEach(g => {
+    groups.forEach(g => {
+      g.setAttribute("aria-pressed", String(g.dataset.ch === (ex.dataset.active || "telo")));
       g.addEventListener("click", () => set(g.dataset.ch));
-      g.addEventListener("mouseenter", () => set(g.dataset.ch));
+      g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); set(g.dataset.ch); } });
     });
     $$("[data-goto]").forEach(a => a.addEventListener("click", () => set(a.dataset.goto)));
   })();
@@ -555,9 +638,9 @@
       if ($("[name=botcheck]", f).checked) return;
       if (!keyOk) return;
       const data = new FormData(f);
-      data.append("access_key", P.web3formsKey);
-      data.append("subject", `[Website] ${data.get("topic")}: ${data.get("name")}`);
-      data.append("from_name", "subhajit-dutta website");
+      data.set("access_key", P.web3formsKey);
+      data.set("subject", `[Website] ${data.get("topic")}: ${data.get("name")}`);
+      data.set("from_name", "subhajit-dutta website");
       btn.disabled = true; msg.className = "form-msg"; msg.textContent = "Sending…";
       try {
         const r = await fetch("https://api.web3forms.com/submit", {method: "POST", body: data, headers: {Accept: "application/json"}});

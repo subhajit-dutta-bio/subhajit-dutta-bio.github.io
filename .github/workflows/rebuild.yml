@@ -1,5 +1,5 @@
-# Rebuilds the pages whenever the data, styles, scripts or build tool change on main, and commits
-# the result. Edit a file in assets/data/ (even in the GitHub web editor) and the site updates itself.
+# Rebuilds the pages and CV PDF whenever the data, styles, scripts or build tools change on main,
+# and commits the result. Edit a file in assets/data/ (even in the GitHub web editor) and the site updates itself.
 name: Rebuild pages
 on:
   workflow_dispatch:
@@ -21,12 +21,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Build
-        run: node tools/build.mjs && node tools/build.mjs --check
+      - name: Build pages and CV PDF
+        run: |
+          node tools/build.mjs
+          node tools/build.mjs --check
+          node tools/build-pdf.mjs
       - name: Commit if anything changed
         run: |
           set -euo pipefail
-          if git diff --quiet; then echo "Pages already up to date."; exit 0; fi
+          if git diff --quiet && [ -z "$(git ls-files --others --exclude-standard)" ]; then echo "Pages already up to date."; exit 0; fi
           git config user.name "Subhajit Dutta"
           git config user.email "subhajit-dutta-bio@users.noreply.github.com"
           git add -A

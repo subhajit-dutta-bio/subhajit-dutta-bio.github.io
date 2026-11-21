@@ -33,7 +33,7 @@ window.SITE.profile = {
   ogImage: "/assets/img/og.jpg",
 
   // Your CV as PDF, e.g. "/assets/pdf/CV_Subhajit_Dutta.pdf". Leave empty to hide the button.
-  cvPdf: "",
+  cvPdf: "/assets/pdf/CV_Subhajit_Dutta.pdf",
 
   // Profile links. Empty entries are hidden.
   links: {

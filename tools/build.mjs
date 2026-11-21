@@ -17,7 +17,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CHECK = process.argv.includes("--check");
-const rd = p => fs.readFileSync(path.join(ROOT, p), "utf8");
+const rd = p => fs.readFileSync(path.join(ROOT, p), "utf8").replace(/\r\n/g, "\n");
 
 /* ---------- Load data exactly as the browser would ---------- */
 const ctx = { window: {} };
@@ -28,6 +28,7 @@ for (const f of ["profile", "publications", "news", "talks", "awards", "media", 
 const S = ctx.window.SITE;
 const P = S.profile;
 const POS = P.position || {};
+const mediaBySrc = new Map((S.media || []).map(m => [m.src, m]));
 
 /* ---------- Helpers ---------- */
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -64,20 +65,50 @@ function role(p) {
 const ROLE_LABEL = { sole: "Sole author", first: "First author", "co-first": "Co-first author", inventor: "Lead inventor" };
 const badge = p => { const r = role(p); return r ? `<span class="badge badge-${r}">${ROLE_LABEL[r]}</span>` : ""; };
 const KIND = { paper: "Article", review: "Manuscript", preprint: "Preprint", commentary: "Journal club", chapter: "Chapter", patent: "Patent", consortium: "Consortium" };
+const THEME_META = {
+  telomere: { href: "/research/#telomere", dot: "telo", label: "Ch1 · Telomeres" },
+  math: { href: "/research/#mitochondria", dot: "mito", label: "Ch2 · Mitochondria" },
+  imaging: { href: "/research/#imaging", dot: "actin", label: "Ch3 · Imaging" },
+  pancancer: { href: "/research/#pancancer", dot: "niche", label: "Ch4 · Pan-cancer" }
+};
 const count = t => t === "all" ? PUBS.length : t === "selected" ? PUBS.filter(p => p.selected).length : PUBS.filter(p => p.type === t).length;
 const leadCount = PUBS.filter(p => ["paper", "preprint"].includes(p.type) && ["sole", "first", "co-first"].includes(role(p))).length;
+
+function figMeta(p, fallbackHref) {
+  const m = p.fig ? mediaBySrc.get(p.fig) : null;
+  return {
+    cap: m?.caption || strip(p.title),
+    cred: m?.credit || "",
+    lnk: m?.link || fallbackHref || "",
+    dims: m?.w && m?.h ? ` width="${m.w}" height="${m.h}"` : ""
+  };
+}
+
+function pubFilters() {
+  return (S.pubTypes || []).filter(([k]) => count(k) > 0).map(([k, label]) =>
+    `<button type="button" class="chip" data-type="${esc(k)}" aria-pressed="${k === "selected" ? "true" : "false"}">${esc(label)}<span class="n">${count(k)}</span></button>`
+  ).join("");
+}
 
 function pubItem(p) {
   const h = href(p);
   const st = p.status && p.status !== "published" ? `<span class="st">${esc(p.status)}</span>` : "";
+  const fm = figMeta(p, h);
   const acts = [];
-  if (h) acts.push(`<a class="btn sm" href="${esc(h)}"${ext(h)}>${p.doi ? "DOI" : "Link"}</a>`);
-  if (p.preprint) acts.push(`<a class="btn sm" href="https://doi.org/${esc(p.preprint)}" target="_blank" rel="noopener">Preprint</a>`);
+  if (h) {
+    const lbl = p.type === "patent" ? "Patent ↗" : p.type === "preprint" ? "Preprint ↗" : p.doi ? "Article · DOI ↗" : "Article ↗";
+    acts.push(`<a class="btn sm" href="${esc(h)}"${ext(h)}>${lbl}</a>`);
+  }
+  if (p.preprint) acts.push(`<a class="btn sm" href="https://doi.org/${esc(p.preprint)}" target="_blank" rel="noopener">Preprint ↗</a>`);
   if (p.pdf) acts.push(`<a class="btn sm" href="${esc(p.pdf)}" target="_blank" rel="noopener">PDF</a>`);
-  if (p.code) acts.push(`<a class="btn sm" href="${esc(p.code)}" target="_blank" rel="noopener">Code</a>`);
+  if (p.code) acts.push(`<a class="btn sm" href="${esc(p.code)}" target="_blank" rel="noopener">Code ↗</a>`);
+  if (p.fig) acts.push(`<button class="btn sm" type="button" data-zoom="${esc(p.fig)}" data-caption="${esc(fm.cap)}" data-credit="${esc(fm.cred)}" data-credit-url="${esc(fm.lnk)}">Figure</button>`);
   acts.push(`<button class="btn sm" type="button" data-bib>BibTeX</button>`);
+  const chLinks = (p.tags || []).map(t => THEME_META[t]).filter(Boolean).map(tm =>
+    `<a class="pub-ch mono" href="${tm.href}"><i class="ch-dot ch-dot-${tm.dot}" aria-hidden="true"></i>${esc(tm.label)}</a>`
+  ).join("");
   const search = strip(`${p.title} ${p.authors} ${p.venue || ""} ${p.year} ${p.note || ""}`).toLowerCase();
-  const thumb = p.fig ? `<a class="pub-thumb" href="${esc(h || p.fig)}"${ext(h || "")} tabindex="-1" aria-hidden="true"><img src="${esc(p.fig)}" alt="" loading="lazy" decoding="async"></a>` : "";
+  const thumb = p.fig ? `<button class="pub-thumb" type="button" data-zoom="${esc(p.fig)}" data-caption="${esc(fm.cap)}" data-credit="${esc(fm.cred)}" data-credit-url="${esc(fm.lnk)}" aria-label="Enlarge figure: ${esc(strip(p.title))}"><img src="${esc(p.fig)}" alt="${esc(fm.cap)}"${fm.dims} loading="lazy" decoding="async"></button>` : "";
   return `<li class="pub${p.fig ? " has-thumb" : ""}" data-i="${p.i}" data-type="${p.type}"${p.selected ? ' data-selected="1"' : ""} data-search="${esc(search)}">
         <div class="pub-kind"><span class="pub-yr">${p.year}</span><span>${KIND[p.type] || ""}</span>${st}${badge(p)}</div>
         <div class="pub-main">
@@ -86,6 +117,7 @@ function pubItem(p) {
           ${p.venue ? `<div class="pub-venue"><i>${p.venue}</i></div>` : ""}
           ${p.take ? `<p class="pub-take">${p.take}</p>` : ""}
           ${p.note ? `<div class="pub-note">${p.note}</div>` : ""}
+          ${chLinks ? `<div class="pub-tags">${chLinks}</div>` : ""}
           <div class="pub-actions">${acts.join("")}</div>
         </div>${thumb}
       </li>`;
@@ -103,11 +135,43 @@ const pubSummary = () => `${count("paper")} peer-reviewed articles, ${count("pre
 function pendingList() {
   return PENDING.map(p => `<li class="pend"><div class="pub-title">${p.title}</div><div class="pub-authors">${p.authors}</div><div class="pub-note">${esc(p.note || "Manuscript")} · ${esc(p.status)}</div></li>`).join("\n        ");
 }
+function pubsLd() {
+  const site = P.siteUrl.replace(/\/$/, "");
+  const items = PUBS.map((p, idx) => {
+    const h = href(p);
+    const journal = strip(p.venue || "").split(",")[0].trim();
+    const item = {
+      "@type": p.type === "patent" ? "CreativeWork" : "ScholarlyArticle",
+      name: strip(p.title),
+      datePublished: String(p.year),
+      author: strip(p.authors).replace(/\*/g, "")
+    };
+    if (journal) item.isPartOf = { "@type": "Periodical", name: journal };
+    if (p.doi) {
+      item.sameAs = "https://doi.org/" + p.doi;
+      item.identifier = { "@type": "PropertyValue", propertyID: "DOI", value: p.doi };
+    } else if (h) {
+      item.url = h;
+    }
+    if (p.type === "preprint") item.creativeWorkStatus = "Preprint";
+    return { "@type": "ListItem", position: idx + 1, item };
+  });
+  const json = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: `Publications of ${P.name}`,
+    url: `${site}/publications/`,
+    about: { "@type": "Person", "@id": `${site}/#person`, name: P.name },
+    mainEntity: { "@type": "ItemList", itemListElement: items }
+  });
+  return `<script type="application/ld+json" id="pubs-ld">${json}</script>`;
+}
 function featured() {
   return PUBS.filter(p => p.featured).sort((a, b) => b.year - a.year).slice(0, 3).map(p => {
     const h = href(p) || (p.preprint ? "https://doi.org/" + p.preprint : "/publications/");
     const venue = strip(p.venue || "").split(",")[0];
-    const fig = p.fig ? `<a class="feat-fig" href="${esc(h)}"${ext(h)} tabindex="-1" aria-hidden="true"><img src="${esc(p.fig)}" alt="" loading="lazy" decoding="async"></a>` : "";
+    const fm = figMeta(p, h);
+    const fig = p.fig ? `<button class="feat-fig" type="button" data-zoom="${esc(p.fig)}" data-caption="${esc(fm.cap)}" data-credit="${esc(fm.cred)}" data-credit-url="${esc(fm.lnk)}" aria-label="Enlarge figure: ${esc(strip(p.title))}"><img src="${esc(p.fig)}" alt="${esc(fm.cap)}"${fm.dims} loading="lazy" decoding="async"><span class="zoom-badge mono" aria-hidden="true">Zoom</span></button>` : "";
     return `<article>${fig}<div class="k"><span class="mono">${esc(venue)} · ${p.year}</span>${badge(p)}</div><h3><a href="${esc(h)}"${ext(h)}>${p.title}</a></h3><p>${p.authors}</p>${p.take ? `<p class="feat-take">${p.take}</p>` : ""}</article>`;
   }).join("\n      ");
 }
@@ -119,6 +183,12 @@ const newsRows = lim => NEWS.slice(0, lim || NEWS.length).map(newsRow).join("\n 
 
 /* ---------- Talks ---------- */
 const TALKS = S.talks.slice().sort((a, b) => b.sort.localeCompare(a.sort));
+function talkFilters() {
+  return [["all", "All"], ["talk", "Talks"], ["poster", "Posters"]].map(([k, label]) => {
+    const n = k === "all" ? TALKS.length : TALKS.filter(t => t.kind === k).length;
+    return `<button type="button" class="chip" data-kind="${k}" aria-pressed="${k === "all" ? "true" : "false"}">${label}<span class="n">${n}</span></button>`;
+  }).join("");
+}
 function talkRows() {
   return TALKS.map(t => {
     const acts = [];
@@ -151,19 +221,29 @@ const stats = () => `<a href="/publications/"><b>${leadCount}</b> first- or sole
 const journeyRow = j => `<li class="row"><div class="row-when">${j.when}</div><div><div class="row-title">${j.title}</div><div class="row-where">${j.where}</div>${j.what ? `<p class="row-what">${j.what}</p>` : ""}</div></li>`;
 const journey = () => S.journey.map(journeyRow).join("\n      ");
 const methods = () => S.methods.map(m => `<div><dt>${m.k}</dt><dd>${m.v}</dd></div>`).join("\n      ");
+const GROUP_DOT = { methods: "actin", genomics: "niche", migration: "mito" };
 function software() {
   return S.softwareGroups.map(([key, label]) => {
     const list = S.software.filter(s => s.group === key); if (!list.length) return "";
+    const dot = GROUP_DOT[key] || "actin";
     const cards = list.map(s => {
       const url = `https://github.com/${s.repo}`;
       const meta = [s.lang, s.licence ? `${s.licence} licence` : ""].filter(Boolean).join(" · ");
-      return `<li><a class="tool" href="${esc(url)}" target="_blank" rel="noopener"><span class="tool-k mono">${esc(meta || "Code")}</span><span class="tool-t">${esc(s.name)}</span><span class="tool-d">${esc(s.what)}</span><span class="tool-repo mono">github.com/${esc(s.repo)}</span>${s.doi ? `<span class="tool-doi mono">doi:${esc(s.doi)}</span>` : ""}</a></li>`;
+      const tags = (s.tags || []).length ? `<ul class="tool-tags" aria-label="Topics">${s.tags.map(t => `<li>${esc(t)}</li>`).join("")}</ul>` : "";
+      const acts = [`<a class="btn sm" href="${esc(url)}" target="_blank" rel="noopener">GitHub ↗</a>`];
+      if (s.paper) acts.push(`<a class="btn sm" href="${esc(s.paper)}" target="_blank" rel="noopener">Paper ↗</a>`);
+      if (s.thread) acts.push(`<a class="btn sm" href="${esc(s.thread)}">${esc(s.threadLabel || "Research")} →</a>`);
+      return `<li class="tool-item"><article class="tool"><div class="tool-top"><span class="tool-k mono"><i class="ch-dot ch-dot-${dot}" aria-hidden="true"></i>${esc(meta || "Code")}</span>${s.doi ? `<span class="tool-doi mono">doi:${esc(s.doi)}</span>` : ""}</div><h3 class="tool-t"><a href="${esc(url)}" target="_blank" rel="noopener">${esc(s.name)}</a></h3><p class="tool-d">${esc(s.what)}</p>${tags}<div class="tool-foot"><span class="tool-repo mono">github.com/${esc(s.repo)}</span><div class="tool-actions">${acts.join("")}</div></div></article></li>`;
     }).join("\n        ");
     return `<section class="section sw-group" aria-labelledby="sw-${key}"><div class="wrap"><div class="section-head"><h2 id="sw-${key}">${esc(label)}</h2></div><ul class="tools">\n        ${cards}\n      </ul></div></section>`;
   }).join("\n");
 }
 
 /* ---------- CV ---------- */
+const cvActions = () => P.cvPdf
+  ? `<a class="btn primary" href="${esc(P.cvPdf)}" download="CV_Subhajit_Dutta.pdf" data-cv>Download PDF</a><button class="btn" type="button" data-print>Print / Save as PDF</button>`
+  : `<button class="btn primary" type="button" data-print>Save as PDF</button>`;
+
 function cv() {
   const L = P.links || {};
   const contact = [
@@ -175,14 +255,15 @@ function cv() {
   ].filter(Boolean).join('<span aria-hidden="true"> · </span>');
   const cvPub = p => {
     const h = href(p);
-    return `<li><span class="cv-pub-t">${p.title}.</span> ${p.authors}. ${p.venue ? `<i>${p.venue}</i>` : ""}${p.year ? ` (${p.year})` : ""}${p.status && p.status !== "published" ? `, ${esc(p.status)}` : ""}.${h ? ` <a href="${esc(h)}">${esc(p.doi ? "doi:" + p.doi : h.replace(/^https?:\/\//, ""))}</a>` : ""}${role(p) ? ` <span class="badge badge-${role(p)}">${ROLE_LABEL[role(p)]}</span>` : ""}</li>`;
+    const auth = String(p.authors || "").replace(/\.$/, "");
+    return `<li><span class="cv-pub-t">${p.title}.</span> ${auth}. ${p.venue ? `<i>${p.venue}</i>` : ""}${p.year ? ` (${p.year})` : ""}${p.status && p.status !== "published" ? `, ${esc(p.status)}` : ""}.${h ? ` <a href="${esc(h)}">${esc(p.doi ? "doi:" + p.doi : h.replace(/^https?:\/\//, ""))}</a>` : ""}${role(p) ? ` <span class="badge badge-${role(p)}">${ROLE_LABEL[role(p)]}</span>` : ""}</li>`;
   };
   const block = (title, items, ordered) => items.length ? `<section class="cv-block"><h2>${title}</h2><${ordered ? "ol" : "ul"} class="cv-list">\n        ${items.join("\n        ")}\n      </${ordered ? "ol" : "ul"}></section>` : "";
   const byType = t => PUBS.filter(p => p.type === t);
   const row = (when, what) => `<li class="cv-row"><span class="cv-when mono">${when}</span><span>${what}</span></li>`;
   return `
     <header class="cv-head">
-      <h1>${esc(P.name)}</h1>
+      <h2 class="cv-name">${esc(P.name)}</h2>
       <p class="cv-sub">${esc(POS.headline || POS.role || "")}${POS.city ? ` · ${esc([POS.city, POS.country].filter(Boolean).join(", "))}` : ""}</p>
       <p class="cv-contact">${contact}</p>
     </header>
@@ -190,7 +271,7 @@ function cv() {
     ${block("Positions and education", S.journey.map(j => row(j.when, `<b>${j.title}</b>, ${j.where}${j.what ? `<br><span class="cv-note">${j.what}</span>` : ""}`)))}
     ${block("Peer-reviewed articles", byType("paper").map(cvPub), true)}
     ${block("Preprints", byType("preprint").map(cvPub), true)}
-    ${block("Manuscripts under review or in preparation", PENDING.map(p => `<li><span class="cv-pub-t">${p.title}.</span> ${p.authors}. ${esc(p.note || "Manuscript")}, ${esc(p.status)}.</li>`), true)}
+    ${block("Manuscripts under review or in preparation", PENDING.map(p => `<li><span class="cv-pub-t">${p.title}.</span> ${String(p.authors || "").replace(/\.$/, "")}. ${esc(p.note || "Manuscript")}, ${esc(p.status)}.</li>`), true)}
     ${block("Nature Reviews journal club", byType("commentary").map(cvPub), true)}
     ${block("Patent", byType("patent").map(cvPub))}
     ${block("Consortium authorship", byType("consortium").map(cvPub))}
@@ -206,8 +287,10 @@ function themeFig(key) {
   const m = S.media.find(x => x.theme === key && (x.type || "image") === "image");
   if (!m) return "";
   const dims = m.w && m.h ? ` width="${m.w}" height="${m.h}"` : "";
+  const credAttr = m.credit ? ` data-credit="${esc(m.credit)}"` : "";
+  const linkAttr = m.link ? ` data-credit-url="${esc(m.link)}"` : "";
   const credit = m.credit ? `<span class="fig-credit">${m.link ? `<a href="${esc(m.link)}" target="_blank" rel="noopener">${esc(m.credit)}</a>` : esc(m.credit)}</span>` : "";
-  return `<figure class="${(m.group || "figures") === "figures" ? "plate" : "photo"}"><img src="${esc(m.src)}" alt="${esc(m.caption || "")}" loading="lazy" decoding="async"${dims} data-lightbox><figcaption>${esc(m.caption || "")}${credit}</figcaption></figure>`;
+  return `<figure class="${(m.group || "figures") === "figures" ? "plate" : "photo"}"><img src="${esc(m.src)}" alt="${esc(m.caption || "")}" loading="lazy" decoding="async"${dims} data-lightbox${credAttr}${linkAttr}><figcaption>${esc(m.caption || "")}${credit}</figcaption></figure>`;
 }
 
 /* ---------- Header / footer ---------- */
@@ -219,19 +302,29 @@ const footer = () => FOOTER
   .replace("{{CITY}}", esc(POS.city || ""))
   .replace("{{UPDATED_ISO}}", UPDATED)
   .replace("{{UPDATED}}", `${MONTHS[Number(UPDATED.slice(5, 7)) - 1]} ${UPDATED.slice(0, 4)}`).trimEnd();
-const HEADEXTRA = `<link rel="alternate" type="application/rss+xml" title="Subhajit Dutta: news" href="/feed.xml">
-<link rel="preload" href="/assets/fonts/ibm-plex-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>`;
+function headExtra(html) {
+  const title = (html.match(/<title>([^<]*)<\/title>/) || [])[1] || P.name;
+  const desc = (html.match(/<meta name="description" content="([^"]*)"/) || [])[1] || "";
+  const lines = [
+    `<meta property="og:image:alt" content="Subhajit Dutta — Experimental cancer biologist and data-driven informatician">`,
+    `<meta name="twitter:title" content="${title}">`,
+    desc ? `<meta name="twitter:description" content="${desc}">` : "",
+    `<link rel="alternate" type="application/rss+xml" title="Subhajit Dutta: news" href="/feed.xml">`,
+    `<link rel="preload" href="/assets/fonts/ibm-plex-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>`
+  ].filter(Boolean);
+  return lines.join("\n");
+}
 
 /* ---------- Pages ---------- */
 const nowLine = [POS.headline || POS.role, POS.org].filter(Boolean).join(", ");
 const PAGES = {
   "index.html": { page: "home", blocks: { now: () => esc(nowLine), latest: () => newsRows(3), featured, stats, journey } },
   "research/index.html": { page: "research", blocks: { methods, "fig-telomere": () => themeFig("telomere"), "fig-math": () => themeFig("math"), "fig-imaging": () => themeFig("imaging"), "fig-pancancer": () => themeFig("pancancer") } },
-  "publications/index.html": { page: "publications", blocks: { "pub-summary": pubSummary, pubs: pubList, pending: pendingList, "pending-n": () => String(PENDING.length) } },
+  "publications/index.html": { page: "publications", blocks: { "pubs-ld": pubsLd, "pub-summary": pubSummary, "pub-filters": pubFilters, pubs: pubList, pending: pendingList, "pending-n": () => String(PENDING.length) } },
   "software/index.html": { page: "software", blocks: { software } },
-  "talks/index.html": { page: "talks", blocks: { talks: talkRows } },
+  "talks/index.html": { page: "talks", blocks: { "talk-filters": talkFilters, talks: talkRows } },
   "awards/index.html": { page: "awards", blocks: { "award-cards": awardCards, "award-groups": awardGroups } },
-  "cv/index.html": { page: "cv", blocks: { cv } },
+  "cv/index.html": { page: "cv", blocks: { "cv-actions": cvActions, cv } },
   "media/index.html": { page: "media", blocks: {} },
   "news/index.html": { page: "news", blocks: { news: () => newsRows() } },
   "collaborate/index.html": { page: "collaborate", blocks: {} },
@@ -251,17 +344,18 @@ const assetVersion = p => versions[p] ??= crypto.createHash("sha256").update(fs.
 const changed = [];
 function write(rel, content) {
   const abs = path.join(ROOT, rel);
-  const old = fs.existsSync(abs) ? fs.readFileSync(abs, "utf8") : null;
+  const old = fs.existsSync(abs) ? fs.readFileSync(abs, "utf8").replace(/\r\n/g, "\n") : null;
   if (old === content) return;
   changed.push(rel);
-  if (!CHECK) { fs.mkdirSync(path.dirname(abs), { recursive: true }); fs.writeFileSync(abs, content); }
+  if (!CHECK) { fs.mkdirSync(path.dirname(abs), { recursive: true }); fs.writeFileSync(abs, content, "utf8"); }
 }
 
 for (const [file, cfg] of Object.entries(PAGES)) {
   let html = rd(file);
+  html = html.replace(/<a class="skip" href="#main">Skip to content<\/a>/g, `<a class="skip" href="#main">Skip to main content</a>`);
   html = fill(html, "header", "\n" + header(cfg.page) + "\n", file);
   html = fill(html, "footer", "\n" + footer() + "\n", file);
-  html = fill(html, "headextra", "\n" + HEADEXTRA + "\n", file);
+  html = fill(html, "headextra", "\n" + headExtra(html) + "\n", file);
   for (const [name, fn] of Object.entries(cfg.blocks)) html = fill(html, name, fn(), file);
   html = html.replace(/("dateModified": ")[^"]*(")/, `$1${UPDATED}$2`);
   // Cache-busting: every stylesheet and script link carries a hash of the file, so browsers fetch
